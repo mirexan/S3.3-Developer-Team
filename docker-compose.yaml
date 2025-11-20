@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: project_user
+      MYSQL_PASSWORD: project_pass
+      MYSQL_DB: project_db
+    depends_on:
+    - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: project_db
+      MYSQL_USER: project_user
+      MYSQL_PASSWORD: project_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+
