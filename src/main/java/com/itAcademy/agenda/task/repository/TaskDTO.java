@@ -1,6 +1,4 @@
-package com.itAcademy.agenda.task.dto;
-
-import com.itAcademy.agenda.task.cli.Task;
+package com.itAcademy.agenda.task.repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +9,7 @@ public class TaskDTO {
     private final LocalDate date;
     private final Boolean completed;
     private final LocalDateTime creationDate;
-    private final Task.Priority priority;
+    private final String priority;
 
     private TaskDTO(Builder builder) {
         this.creationDate = builder.creationDate;
@@ -42,7 +40,7 @@ public class TaskDTO {
         return mainText;
     }
 
-    public Task.Priority getPriority() {
+    public String getPriority() {
         return priority;
     }
 
@@ -52,7 +50,7 @@ public class TaskDTO {
         private LocalDate date;
         private Boolean completed = false;
         private LocalDateTime creationDate;
-        private Task.Priority priority;
+        private String priority;
 
         public Builder id(Integer id) {
             this.id = id;
@@ -79,7 +77,7 @@ public class TaskDTO {
             return this;
         }
 
-        public Builder priority(Task.Priority priority) {
+        public Builder priority(String priority) {
             this.priority = priority;
             return this;
         }

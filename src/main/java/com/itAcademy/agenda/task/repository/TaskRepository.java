@@ -1,10 +1,10 @@
 package com.itAcademy.agenda.task.repository;
 
-//TODO: Es possible k tenga k cambiar esta referencia
-import com.itAcademy.agenda.task.cli.Task;
-import com.itAcademy.agenda.task.dto.TaskDTO;
+import com.itAcademy.agenda.task.cli.Priority;
+import com.itAcademy.agenda.task.model.Task;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TaskRepository {
@@ -19,27 +19,27 @@ public class TaskRepository {
                 .mainText(task.getMainText())
                 .date(task.getDate())
                 .creationDate(task.getCreationDate())
-                .priority(task.getPriority())
-                .completed(task.isCompleted())
+                .priority(task.getPriority().name())
                 .build();
 
         dao.save(dto);
     }
 
-    public Task getTask(int id) {
+    public Optional<Task> getTask(int id) {
         TaskDTO idDto = new TaskDTO.Builder()
                 .id(id)
                 .build();
 
-        TaskDTO dto = dao.findById(idDto);
+        Optional<TaskDTO> dtoOpt = dao.findById(idDto);
 
-        return new Task(
+        return dtoOpt.map(dto -> new Task(
                 dto.getId(),
                 dto.getMainText(),
                 dto.getDate(),
                 dto.getCompleted(),
                 dto.getCreationDate(),
-                dto.getPriority());
+                Priority.valueOf(dto.getPriority())
+        ));
     }
 
     public List<Task> getAllTasks() {
@@ -50,11 +50,9 @@ public class TaskRepository {
                         dto.getDate(),
                         dto.getCompleted(),
                         dto.getCreationDate(),
-                        dto.getPriority()
-                ))
+                        Priority.valueOf(dto.getPriority())))
                 .collect(Collectors.toList());
     }
-
 
     public void completeTask(Task task) {
         TaskDTO dto = new TaskDTO.Builder()
@@ -62,7 +60,7 @@ public class TaskRepository {
                 .completed(task.isCompleted())
                 .build();
 
-        dao.update(dto);
+        dao.markAsCompleted(dto);
     }
 
     public void updateTask(Task task) {
@@ -70,9 +68,7 @@ public class TaskRepository {
                 .id(task.getId())
                 .mainText(task.getMainText())
                 .date(task.getDate())
-                .creationDate(task.getCreationDate())
-                .priority(task.getPriority())
-                .completed(task.isCompleted())
+                .priority(task.getPriority().name())
                 .build();
 
         dao.update(dto);
