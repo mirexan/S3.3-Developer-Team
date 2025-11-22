@@ -1,14 +1,13 @@
 package com.itAcademy.agenda.task.repository;
 
-import com.itAcademy.agenda.task.cli.Task;
-import com.itAcademy.agenda.task.dto.TaskDTO;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskDAO {
     void save(TaskDTO dto);
-    TaskDTO findById(TaskDTO dto);
+    Optional<TaskDTO> findById(TaskDTO dto);
     List<TaskDTO> findAll();
     void update(TaskDTO dto);
+    void markAsCompleted(TaskDTO dto);
     void delete(TaskDTO dto);
 }
