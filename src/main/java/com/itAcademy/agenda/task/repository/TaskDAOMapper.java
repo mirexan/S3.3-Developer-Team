@@ -1,0 +1,45 @@
+package com.itAcademy.agenda.task.repository;
+
+import com.itAcademy.agenda.common.utils.MySQLDatabaseConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TaskDAOMapper {
+    private final Connection conn;
+
+    public TaskDAOMapper() {
+        this.conn = MySQLDatabaseConnection.getInstance();
+    }
+
+    public List<TaskDTO> executeQueryAndToDtoList(String sqlQuery) {
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<TaskDTO> dtos = new ArrayList<>();
+
+                while (rs.next()) {
+                    dtos.add(toDto(rs));
+                }
+                return dtos;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TaskDTO toDto(ResultSet rs) throws SQLException {
+        return new TaskDTO(
+                rs.getInt("id"),
+                rs.getString("main_text"),
+                rs.getDate("date").toLocalDate(),
+                rs.getTimestamp("creation_date").toLocalDateTime(),
+                rs.getString("priority"),
+                rs.getBoolean("completed")
+        );
+    }
+
+}

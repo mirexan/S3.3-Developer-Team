@@ -9,5 +9,7 @@ public interface TaskDAO {
     List<TaskDTO> findAll();
     void update(TaskDTO dto);
     void markAsCompleted(TaskDTO dto);
+    List<TaskDTO> listPendent();
+    List<TaskDTO> listCompleted();
     void delete(TaskDTO dto);
 }

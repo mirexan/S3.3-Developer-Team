@@ -3,15 +3,16 @@ package com.itAcademy.agenda.task.repository;
 import com.itAcademy.agenda.common.utils.MySQLDatabaseConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class MySQLTaskDAOAdapter implements TaskDAO {
     private final Connection conn;
+    private final TaskDAOMapper mapper;
 
     public MySQLTaskDAOAdapter() {
         this.conn = MySQLDatabaseConnection.getInstance();
+        this.mapper = new TaskDAOMapper();
     }
 
     @Override
@@ -44,58 +45,6 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
     }
 
     @Override
-    public Optional<TaskDTO> findById(TaskDTO dto) {
-        String sqlQuery = "SELECT * FROM task WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
-            stmt.setInt(1, dto.getId());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(new TaskDTO.Builder()
-                            .id(rs.getInt("id"))
-                            .mainText(rs.getString("main_text"))
-                            .date(rs.getDate("date").toLocalDate())
-                            .creationDate(rs.getTimestamp("creation_date").toLocalDateTime())
-                            .priority(rs.getString("priority"))
-                            .completed(rs.getBoolean("completed"))
-                            .build());
-                }else {
-                    return Optional.empty();
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public List<TaskDTO> findAll() {
-        String sqlQuery = "SELECT * FROM task";
-        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)){
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<TaskDTO> dtos = new ArrayList<>();
-
-                while (rs.next()) {
-                    TaskDTO dto = new TaskDTO.Builder()
-                            .id(rs.getInt("id"))
-                            .mainText(rs.getString("main_text"))
-                            .date(rs.getDate("date").toLocalDate())
-                            .creationDate(rs.getTimestamp("creation_date").toLocalDateTime())
-                            .priority(rs.getString("priority"))
-                            .completed(rs.getBoolean("completed"))
-                            .build();
-
-                    dtos.add(dto);
-                }
-
-                return dtos;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public void update(TaskDTO dto) {
         String sqlQuery = "UPDATE task SET main_text = ?, date = ?, priority = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
@@ -123,5 +72,38 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error: " + e.getMessage());
         }
+    }
+
+    @Override
+    public Optional<TaskDTO> findById(TaskDTO dto) {
+        String sqlQuery = "SELECT * FROM task WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+            stmt.setInt(1, dto.getId());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapper.toDto(rs));
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<TaskDTO> findAll() {
+        return mapper.executeQueryAndToDtoList("SELECT * FROM task");
+    }
+
+    @Override
+    public List<TaskDTO> listPendent() {
+        return mapper.executeQueryAndToDtoList("SELECT * FROM task WHERE completed = 0");
+    }
+
+    @Override
+    public List<TaskDTO> listCompleted() {
+        return mapper.executeQueryAndToDtoList("SELECT * FROM task WHERE completed = 1");
     }
 }

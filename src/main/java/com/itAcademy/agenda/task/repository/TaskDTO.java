@@ -4,20 +4,25 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TaskDTO {
-    private final Integer id;
-    private final String mainText;
-    private final LocalDate date;
-    private final Boolean completed;
-    private final LocalDateTime creationDate;
-    private final String priority;
+    private Integer id;
+    private String mainText;
+    private LocalDate date;
+    private Boolean completed;
+    private LocalDateTime creationDate;
+    private String priority;
 
-    private TaskDTO(Builder builder) {
-        this.creationDate = builder.creationDate;
-        this.id = builder.id;
-        this.mainText = builder.mainText;
-        this.completed = builder.completed;
-        this.date = builder.date;
-        this.priority = builder.priority;
+    public TaskDTO(int id, String mainText, LocalDate date, LocalDateTime creationDate,
+                    String priority, boolean completed) {
+        this.creationDate = creationDate;
+        this.id = id;
+        this.mainText = mainText;
+        this.completed = completed;
+        this.date = date;
+        this.priority = priority;
+    }
+
+    public TaskDTO(int id) {
+        this.id = id;
     }
 
     public Boolean getCompleted() {
@@ -42,48 +47,5 @@ public class TaskDTO {
 
     public String getPriority() {
         return priority;
-    }
-
-    public static class Builder {
-        private Integer id;
-        private String mainText;
-        private LocalDate date;
-        private Boolean completed = false;
-        private LocalDateTime creationDate;
-        private String priority;
-
-        public Builder id(Integer id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder mainText(String mainText) {
-            this.mainText = mainText;
-            return this;
-        }
-
-        public Builder date(LocalDate date) {
-            this.date = date;
-            return this;
-        }
-
-        public Builder completed(Boolean completed) {
-            this.completed = completed;
-            return this;
-        }
-
-        public Builder creationDate(LocalDateTime creationDate) {
-            this.creationDate = creationDate;
-            return this;
-        }
-
-        public Builder priority(String priority) {
-            this.priority = priority;
-            return this;
-        }
-
-        public TaskDTO build() {
-            return new TaskDTO(this);
-        }
     }
 }
