@@ -3,9 +3,10 @@ package com.itAcademy.agenda.task.cli;
 import com.itAcademy.agenda.common.exception.InvalidInputException;
 import com.itAcademy.agenda.common.exception.TaskNotFoundException;
 import com.itAcademy.agenda.common.utils.ConsoleInputUtils;
+import com.itAcademy.agenda.task.dto.TaskOutputDTO;
 import com.itAcademy.agenda.task.service.TaskService;
 
-import java.io.Console;
+import java.util.List;
 
 public class TaskCLI {
 	private final TaskService taskService;
@@ -21,9 +22,9 @@ public class TaskCLI {
 				switch (option) {
 					case 1 -> {
 						//pedir propiedades de tarea
-						taskService.createTask();
+						//taskService.createTask();
 					}
-					case 2 -> taskService.listPendentTasks();
+					case 2 -> listPendentTasksCLI();
 					case 3 -> { askTaskToDelete();
 
 					}
@@ -65,5 +66,14 @@ public class TaskCLI {
 			System.out.println("Input error, please introduce an id number");
 		}
 
+	}
+	public void listPendentTasksCLI() {
+		System.out.printf("\n --- Not completed Tasks ---\n");
+		List<TaskOutputDTO> tasks = taskService.listPendentTasks();
+		if(tasks.isEmpty()){
+			System.out.println("No Tasks Found");
+			return ;
+		}
+		tasks.forEach(taskOutputDTO -> System.out.println(taskOutputDTO.toString()));
 	}
 }

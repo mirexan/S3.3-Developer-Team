@@ -2,6 +2,7 @@ package com.itAcademy.agenda.task.model;
 
 import com.itAcademy.agenda.task.service.TaskBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ public class Task {
     private Priority priority;
     private boolean completed;
     private LocalDateTime creationDate;
+
 
     public enum Priority{
         LOW, MEDIUM, HIGH
@@ -33,6 +35,9 @@ public class Task {
 
     public String getText() {
         return text;
+    }
+    public String getPriority() {
+        return this.priority.toString();
     }
 
     public LocalDateTime getExpirationDate() {

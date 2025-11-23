@@ -48,7 +48,7 @@ public class TaskService {
         //return TaskRepository.save(task);
     }
 
-    List<TaskOutputDTO> listPendentTasks() {
+    public List<TaskOutputDTO> listPendentTasks() {
         // 1. Obtenemos las entidades del repositorio (que vienen del DAO)
         List<Task> tasks = taskRepository.listPendentTasks();
         // 2. Convertimos de Entidad a DTO para proteger el dominio
@@ -56,6 +56,7 @@ public class TaskService {
                 .map(task -> new TaskOutputDTO(
                         task.getId(),
                         task.getText(),
+                        task.getPriority(),
                         false
                 ))
                 .toList();
