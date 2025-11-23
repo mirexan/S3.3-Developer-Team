@@ -1,10 +1,15 @@
 package com.itAcademy.agenda.task.service;
 
 import com.itAcademy.agenda.common.exception.InvalidTaskException;
+import com.itAcademy.agenda.common.exception.TaskNotFoundException;
+import com.itAcademy.agenda.task.dto.TaskOutputDTO;
+import com.itAcademy.agenda.task.model.Task;
 import com.itAcademy.agenda.task.repository.TaskRepository;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 //este import esta de relleno, es la importación del TaskRepository
 //import task.TaskRepository;
 
@@ -16,8 +21,6 @@ public class TaskService {
     public TaskService(TaskRepository taskRepository, TaskBuilder taskBuilder) {
         this.taskRepository = taskRepository;
         this.taskBuilder = taskBuilder;
-
-
         }
 
     //Crea una nueva tarea, parametros minimos: texto obligatorio y fecha de caducidad
@@ -45,11 +48,27 @@ public class TaskService {
         //return TaskRepository.save(task);
     }
 
-    /*
-    public List<Task> getAllTasks() throws SQLException {
-        return taskRepository.findAll();
+    List<TaskOutputDTO> listPendentTasks() throws SQLException{
+        // 1. Obtenemos las entidades del repositorio (que vienen del DAO)
+        List<Task> tasks = taskRepository.listPendentTasks();
+        // 2. Convertimos de Entidad a DTO para proteger el dominio
+        return tasks.stream()
+                .map(task -> new TaskOutputDTO(
+                        task.getId(),
+                        task.getText(),
+                        false
+                ))
+                .toList();
     }
 
+    public void deleteTask(int id){
+        Optional<Task> optionalTask = taskRepository.getTask(id);
+        if(optionalTask.isEmpty()){
+            throw new TaskNotFoundException("Task with ID: " + id + " not found");
+        }
+        taskRepository.deleteTask(id);
+    }
+/*
     public Task getTaskById (int id) throws SQLException {
     return taskRepository.findbyId(id);
     }

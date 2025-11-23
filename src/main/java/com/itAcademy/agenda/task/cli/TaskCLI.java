@@ -1,6 +1,7 @@
 package com.itAcademy.agenda.task.cli;
 
 import com.itAcademy.agenda.common.exception.InvalidInputException;
+import com.itAcademy.agenda.common.exception.TaskNotFoundException;
 import com.itAcademy.agenda.common.utils.ConsoleInputUtils;
 import com.itAcademy.agenda.task.service.TaskService;
 
@@ -22,8 +23,10 @@ public class TaskCLI {
 						//pedir propiedades de tarea
 						taskService.createTask();
 					}
-					//case 2 -> taskService.listPendentTasks();
-					case 3 -> taskService.deleteTask();
+					case 2 -> taskService.listPendentTasks();
+					case 3 -> { askTaskToDelete();
+
+					}
 					case 0 -> System.out.println("Going back to Main Menu");
 					default -> System.out.println("Invalid option. Try again");
 				}
@@ -42,5 +45,25 @@ public class TaskCLI {
 				+ "3. Delete a Task\n"
 				+ "0. Go back to Main Menu\n"
 				+ "----------------------------------");
+	}
+	private void askTaskToDelete() {
+		try{
+			int id = ConsoleInputUtils.readInt("Please enter the task ID you want to delete");
+			String confirmation = ConsoleInputUtils.readString("Are you sure that you want " +
+					"to eliminate task with ID : " + id + "? (Y/N): ");
+			if(confirmation.equalsIgnoreCase("Y")) {
+				taskService.deleteTask(id);
+				System.out.println("Task Deleted Successfully");
+				return;
+			}
+			System.out.println("The Operation was cancelled, Task hasn't been deleted");
+		}
+		catch (TaskNotFoundException e){
+			System.out.printf("Error : " + e.getMessage());
+		}
+		catch (InvalidInputException e){
+			System.out.println("Input error, please introduce an id number");
+		}
+
 	}
 }
