@@ -4,10 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TaskDTO {
-    private Integer id;
+    private int id;
     private String mainText;
     private LocalDate date;
-    private Boolean completed;
+    private boolean completed;
     private LocalDateTime creationDate;
     private String priority;
 
@@ -23,6 +23,11 @@ public class TaskDTO {
 
     public TaskDTO(int id) {
         this.id = id;
+    }
+
+    public TaskDTO(int id, boolean completed) {
+        this.id = id;
+        this.completed = completed;
     }
 
     public Boolean getCompleted() {

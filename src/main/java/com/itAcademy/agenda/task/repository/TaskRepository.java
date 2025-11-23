@@ -29,7 +29,7 @@ public class TaskRepository {
     }
 
     public void completeTask(Task task) {
-        dao.markAsCompleted(mapper.toDto(task));
+        dao.markAsCompleted(new TaskDTO(task.getId(), task.isCompleted()));
     }
 
     public void updateTask(Task task) {
