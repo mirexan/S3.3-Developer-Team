@@ -1,4 +1,6 @@
-package task;
+package com.itAcademy.agenda.task.model;
+
+import com.itAcademy.agenda.task.service.TaskBuilder;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

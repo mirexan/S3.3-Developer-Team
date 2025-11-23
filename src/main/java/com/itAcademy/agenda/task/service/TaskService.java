@@ -1,25 +1,22 @@
-package task;
+package com.itAcademy.agenda.task.service;
 
 import com.itAcademy.agenda.common.exception.InvalidTaskException;
+import com.itAcademy.agenda.task.repository.TaskRepository;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import com.itAcademy.agenda.common.exception.*;
-import task.Task;
-import task.TaskBuilder;
 //este import esta de relleno, es la importación del TaskRepository
 //import task.TaskRepository;
 
-import java.sql.SQLException;
-import java.util.List;
 public class TaskService {
 
-    //private TaskRepository taskRepository;
+    private TaskRepository taskRepository;
     private TaskBuilder taskBuilder;
 
-    public TaskService(){
-        this.taskBuilder = new TaskBuilder();
-        //this.taskRepository = new TaskRepository();
+    public TaskService(TaskRepository taskRepository, TaskBuilder taskBuilder) {
+        this.taskRepository = taskRepository;
+        this.taskBuilder = taskBuilder;
+
 
         }
 
