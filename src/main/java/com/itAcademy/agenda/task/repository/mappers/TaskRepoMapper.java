@@ -1,11 +1,12 @@
-package com.itAcademy.agenda.task.repository;
+package com.itAcademy.agenda.task.repository.mappers;
 
 
 import com.itAcademy.agenda.task.model.*;
+import com.itAcademy.agenda.task.dto.TaskPersistenceDTO;
 import com.itAcademy.agenda.task.service.TaskBuilder;
 
 public class TaskRepoMapper {
-    public Task toTask(TaskDTO dto) {
+    public Task toTask(TaskPersistenceDTO dto) {
         TaskBuilder builder = new TaskBuilder()
                 .id(dto.getId())
                 .text(dto.getMainText())
@@ -18,8 +19,8 @@ public class TaskRepoMapper {
     }
 
 
-    public TaskDTO toDto(Task task) {
-        return new TaskDTO(
+    public TaskPersistenceDTO toDto(Task task) {
+        return new TaskPersistenceDTO(
                 task.getId(),
                 task.getText(),
                 task.getExpirationDate(),

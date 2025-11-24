@@ -1,6 +1,8 @@
 package com.itAcademy.agenda.task.repository;
 
 import com.itAcademy.agenda.common.utils.MySQLDatabaseConnection;
+import com.itAcademy.agenda.task.dto.TaskPersistenceDTO;
+import com.itAcademy.agenda.task.repository.mappers.TaskDAOMapper;
 
 import java.sql.*;
 import java.util.List;
@@ -16,7 +18,7 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
     }
 
     @Override
-    public void delete(TaskDTO dto) {
+    public void delete(TaskPersistenceDTO dto) {
         String sqlQuery = "DELETE FROM task WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, dto.getId());
@@ -29,7 +31,7 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
     }
 
     @Override
-    public void save(TaskDTO dto) {
+    public void save(TaskPersistenceDTO dto) {
         String sqlQuery = "INSERT INTO task (main_text, date, creation_date, priority) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, dto.getMainText());
@@ -45,7 +47,7 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
     }
 
     @Override
-    public void update(TaskDTO dto) {
+    public void update(TaskPersistenceDTO dto) {
         String sqlQuery = "UPDATE task SET main_text = ?, date = ?, priority = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, dto.getMainText());
@@ -61,7 +63,7 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
     }
 
     @Override
-    public void markAsCompleted(TaskDTO dto) {
+    public void markAsCompleted(TaskPersistenceDTO dto) {
         String sqlQuery = "UPDATE task SET completed = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setBoolean(1, dto.getCompleted());
@@ -75,7 +77,7 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
     }
 
     @Override
-    public Optional<TaskDTO> findById(TaskDTO dto) {
+    public Optional<TaskPersistenceDTO> findById(TaskPersistenceDTO dto) {
         String sqlQuery = "SELECT * FROM task WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setInt(1, dto.getId());
@@ -93,17 +95,17 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
     }
 
     @Override
-    public List<TaskDTO> findAll() {
+    public List<TaskPersistenceDTO> findAll() {
         return mapper.executeQueryAndToDtoList("SELECT * FROM task");
     }
 
     @Override
-    public List<TaskDTO> listPendent() {
+    public List<TaskPersistenceDTO> listPendent() {
         return mapper.executeQueryAndToDtoList("SELECT * FROM task WHERE completed = 0");
     }
 
     @Override
-    public List<TaskDTO> listCompleted() {
+    public List<TaskPersistenceDTO> listCompleted() {
         return mapper.executeQueryAndToDtoList("SELECT * FROM task WHERE completed = 1");
     }
 }

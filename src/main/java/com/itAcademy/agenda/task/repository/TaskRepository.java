@@ -1,6 +1,8 @@
 package com.itAcademy.agenda.task.repository;
 
+import com.itAcademy.agenda.task.dto.TaskPersistenceDTO;
 import com.itAcademy.agenda.task.model.Task;
+import com.itAcademy.agenda.task.repository.mappers.TaskRepoMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +21,7 @@ public class TaskRepository {
     }
 
     public Optional<Task> getTask(int id) {
-        return dao.findById(new TaskDTO(id)).map(mapper::toTask);
+        return dao.findById(new TaskPersistenceDTO(id)).map(mapper::toTask);
     }
 
     public List<Task> getAllTasks() {
@@ -29,7 +31,7 @@ public class TaskRepository {
     }
 
     public void completeTask(Task task) {
-        dao.markAsCompleted(new TaskDTO(task.getId(), task.isCompleted()));
+        dao.markAsCompleted(new TaskPersistenceDTO(task.getId(), task.isCompleted()));
     }
 
     public void updateTask(Task task) {
@@ -49,6 +51,6 @@ public class TaskRepository {
     }
 
     public void deleteTask(int id) {
-        dao.delete(new TaskDTO(id));
+        dao.delete(new TaskPersistenceDTO(id));
     }
 }

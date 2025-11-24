@@ -1,15 +1,17 @@
 package com.itAcademy.agenda.task.repository;
 
+import com.itAcademy.agenda.task.dto.TaskPersistenceDTO;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface TaskDAO {
-    void save(TaskDTO dto);
-    Optional<TaskDTO> findById(TaskDTO dto);
-    List<TaskDTO> findAll();
-    void update(TaskDTO dto);
-    void markAsCompleted(TaskDTO dto);
-    List<TaskDTO> listPendent();
-    List<TaskDTO> listCompleted();
-    void delete(TaskDTO dto);
+    void save(TaskPersistenceDTO dto);
+    Optional<TaskPersistenceDTO> findById(TaskPersistenceDTO dto);
+    List<TaskPersistenceDTO> findAll();
+    void update(TaskPersistenceDTO dto);
+    void markAsCompleted(TaskPersistenceDTO dto);
+    List<TaskPersistenceDTO> listPendent();
+    List<TaskPersistenceDTO> listCompleted();
+    void delete(TaskPersistenceDTO dto);
 }
