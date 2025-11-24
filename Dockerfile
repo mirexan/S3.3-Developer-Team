@@ -3,10 +3,11 @@ FROM eclipse-temurin:21-jdk-jammy AS deps
 
 WORKDIR /build
 
-COPY --chmod=0755 mvnw mvnw
+COPY mvnw .
 COPY .mvn .mvn/
-
 COPY pom.xml .
+RUN sed -i 's/\r$//' mvnw
+RUN chmod +x mvnw
 
 RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -DskipTests

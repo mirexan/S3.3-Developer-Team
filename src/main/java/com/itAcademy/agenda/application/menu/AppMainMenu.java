@@ -3,6 +3,7 @@ package com.itAcademy.agenda.application.menu;
 import com.itAcademy.agenda.common.exception.InvalidInputException;
 import com.itAcademy.agenda.common.utils.ConsoleInputUtils;
 import com.itAcademy.agenda.task.cli.TaskCLI;
+import com.itAcademy.agenda.task.cli.TaskCLIActions;
 import com.itAcademy.agenda.task.repository.MySQLTaskDAOAdapter;
 import com.itAcademy.agenda.task.repository.TaskRepository;
 import com.itAcademy.agenda.task.service.TaskBuilder;
@@ -18,7 +19,8 @@ public class AppMainMenu {
 		TaskRepository taskRepository = new TaskRepository(mySQLDAOAdapter);
 		TaskBuilder taskBuilder = new TaskBuilder();
 		TaskService taskService = new TaskService(taskRepository, taskBuilder);
-		this.taskCLI =  new TaskCLI(taskService);
+		TaskCLIActions taskActions = new TaskCLIActions(taskService);
+		this.taskCLI =  new TaskCLI(taskActions);
 	}
 	public void menuSelector(){
 		initializeApp();
