@@ -1,4 +1,4 @@
-package com.itAcademy.agenda.common.utils;
+package com.itAcademy.agenda.common.persistence;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
