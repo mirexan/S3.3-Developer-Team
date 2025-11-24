@@ -86,12 +86,12 @@ public class TaskCLI {
 		}
 	}
 	public void listAllTasksCLI() {
-		System.out.print("\n --- All Tasks ---\n");
 		try {
 			List<TaskOutputDTO> tasks = taskService.listAllTasks();
+            System.out.print("\n --- All Tasks ---\n");
 			tasks.forEach(taskOutputDTO -> System.out.println(taskOutputDTO.toString()));
 		} catch (TaskNotFoundException e) {
-			System.err.println("Error: " + e.getMessage());
+			System.out.println(e.getMessage());
 		}
 	}
 	public void listPendentTasksCLI() {
