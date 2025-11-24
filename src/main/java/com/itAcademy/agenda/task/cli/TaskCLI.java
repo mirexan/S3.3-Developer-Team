@@ -10,6 +10,7 @@ import com.itAcademy.agenda.task.service.TaskService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 public class TaskCLI {
 	private final TaskService taskService;
 	public TaskCLI(TaskService taskService) {
@@ -83,7 +84,7 @@ public class TaskCLI {
 
 	}
 	public void listPendentTasksCLI() {
-		System.out.printf("\n --- Not completed Tasks ---\n");
+		System.out.print("\n --- Not completed Tasks ---\n");
 		List<TaskOutputDTO> tasks = taskService.listPendentTasks();
 		if(tasks.isEmpty()){
 			System.out.println("No Tasks Found");
