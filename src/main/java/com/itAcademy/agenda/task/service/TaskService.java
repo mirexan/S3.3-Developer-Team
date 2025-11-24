@@ -24,7 +24,7 @@ public class TaskService {
     }
 
     //Crea una nueva tarea, parametros minimos: texto obligatorio y fecha de caducidad
-    public void createTask(String text, LocalDateTime expirationDate) throws InvalidTaskException, SQLException {
+    public void createTask(String text, LocalDateTime expirationDate) throws InvalidTaskException {
 
         //El texto no puede entrar vacio
         if (text == null || text.trim().isEmpty() || text.trim().isBlank()) {

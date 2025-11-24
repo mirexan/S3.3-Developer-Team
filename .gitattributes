@@ -1,0 +1,18 @@
+# Por defecto, git intentará detectar el tipo de texto
+* text=auto
+
+# Archivos CRÍTICOS para Docker y Linux (SIEMPRE deben ser LF)
+mvnw        text eol=lf
+Dockerfile  text eol=lf
+*.sh        text eol=lf
+
+# Archivos de Windows (SIEMPRE deben ser CRLF)
+*.cmd       text eol=crlf
+*.bat       text eol=crlf
+
+# Archivos de código fuente (Opcional: estandarizar a LF para todo el equipo)
+*.java      text eol=lf
+*.xml       text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+.gitignore  text eol=lf

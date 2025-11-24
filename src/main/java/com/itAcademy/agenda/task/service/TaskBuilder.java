@@ -3,9 +3,12 @@ package com.itAcademy.agenda.task.service;
 import com.itAcademy.agenda.task.model.*;
 
 import java.time.LocalDateTime;
+import java.util.Random;
+
+import static java.lang.Math.random;
 
 public class TaskBuilder implements Builder<Task> {
-    private Integer id;
+    private int id;
     private String text;
     private LocalDateTime expirationDate;
     private Priority priority;
@@ -24,7 +27,8 @@ public class TaskBuilder implements Builder<Task> {
     //reset() ya coloca la fecha de creación a la actual y la prioridad en MEDIUM.
     @Override
     public void reset() {
-        this.id = null; //Todavía no tiene id.
+       Random random = new Random();
+		this.id = random.nextInt();
         this.text = null;
         this.expirationDate = null;
         this.priority = Priority.MEDIUM;

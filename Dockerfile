@@ -6,6 +6,8 @@ WORKDIR /build
 COPY --chmod=0755 mvnw mvnw
 COPY .mvn .mvn/
 
+COPY pom.xml .
+
 RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -DskipTests
 

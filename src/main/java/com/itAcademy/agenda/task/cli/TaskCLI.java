@@ -1,11 +1,13 @@
 package com.itAcademy.agenda.task.cli;
 
 import com.itAcademy.agenda.common.exception.InvalidInputException;
+import com.itAcademy.agenda.common.exception.InvalidTaskException;
 import com.itAcademy.agenda.common.exception.TaskNotFoundException;
 import com.itAcademy.agenda.common.utils.ConsoleInputUtils;
 import com.itAcademy.agenda.task.dto.TaskOutputDTO;
 import com.itAcademy.agenda.task.service.TaskService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TaskCLI {
@@ -18,11 +20,9 @@ public class TaskCLI {
 		while (option != 0) {
 			displayMenu();
 			try{
-				option = ConsoleInputUtils.readInt("Choose an option number");
+				option = ConsoleInputUtils.readInt("Choose an option number : ");
 				switch (option) {
-					case 1 -> {
-						//pedir propiedades de tarea
-						//taskService.createTask();
+					case 1 -> { createNewTask();
 					}
 					case 2 -> listPendentTasksCLI();
 					case 3 -> { askTaskToDelete();
@@ -47,9 +47,24 @@ public class TaskCLI {
 				+ "0. Go back to Main Menu\n"
 				+ "----------------------------------");
 	}
+
+	private void createNewTask() {
+		try {
+			System.out.println("\n--- Nueva Tarea ---");
+			String text = ConsoleInputUtils.readString("Descripción de la tarea: ");
+			// Simplificación de fecha para el ejemplo
+			LocalDateTime expiration = LocalDateTime.now().plusDays(1);
+
+			taskService.createTask(text, expiration);
+			System.out.println("✅ Tarea creada correctamente.");
+		} catch (InvalidTaskException e) {
+			System.err.println("Error de validación: " + e.getMessage());
+		}
+	}
+
 	private void askTaskToDelete() {
 		try{
-			int id = ConsoleInputUtils.readInt("Please enter the task ID you want to delete");
+			int id = ConsoleInputUtils.readInt("Please enter the task ID you want to delete : ");
 			String confirmation = ConsoleInputUtils.readString("Are you sure that you want " +
 					"to eliminate task with ID : " + id + "? (Y/N): ");
 			if(confirmation.equalsIgnoreCase("Y")) {
