@@ -39,9 +39,9 @@ public class TaskCLI {
 		}
 	}
 	public void displayMenu() {
-		System.out.println("\n==================================\n"
-				+ "     Task Management Menu    \n"
-				+ "==================================\n"
+		System.out.println("\n:::::::::::::::::::::::::::::::::\n"
+				+ "   \uD83D\uDCD2  TASK - Menu  \uD83D\uDCD2  \n"
+				+ ":::::::::::::::::::::::::::::::::\n"
 				+ "1. Create new Task\n"
 				+ "2. List not completed Tasks\n"
 				+ "3. Delete a Task\n"
