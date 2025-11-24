@@ -1,6 +1,7 @@
-package com.itAcademy.agenda.task.repository;
+package com.itAcademy.agenda.task.repository.mappers;
 
 import com.itAcademy.agenda.common.utils.MySQLDatabaseConnection;
+import com.itAcademy.agenda.task.dto.TaskPersistenceDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,10 +17,10 @@ public class TaskDAOMapper {
         this.conn = MySQLDatabaseConnection.getInstance();
     }
 
-    public List<TaskDTO> executeQueryAndToDtoList(String sqlQuery) {
+    public List<TaskPersistenceDTO> executeQueryAndToDtoList(String sqlQuery) {
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             try (ResultSet rs = stmt.executeQuery()) {
-                List<TaskDTO> dtos = new ArrayList<>();
+                List<TaskPersistenceDTO> dtos = new ArrayList<>();
 
                 while (rs.next()) {
                     dtos.add(toDto(rs));
@@ -31,11 +32,11 @@ public class TaskDAOMapper {
         }
     }
 
-    public TaskDTO toDto(ResultSet rs) throws SQLException {
-        return new TaskDTO(
+    public TaskPersistenceDTO toDto(ResultSet rs) throws SQLException {
+        return new TaskPersistenceDTO(
                 rs.getInt("id"),
                 rs.getString("main_text"),
-                rs.getDate("date").toLocalDate(),
+                rs.getTimestamp("date").toLocalDateTime(),
                 rs.getTimestamp("creation_date").toLocalDateTime(),
                 rs.getString("priority"),
                 rs.getBoolean("completed")

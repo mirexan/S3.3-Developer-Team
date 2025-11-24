@@ -1,18 +1,17 @@
-package com.itAcademy.agenda.task.repository;
+package com.itAcademy.agenda.task.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class TaskDTO {
-    private int id;
+public class TaskPersistenceDTO {
+    private final int id;
     private String mainText;
-    private LocalDate date;
+    private LocalDateTime date;
     private boolean completed;
     private LocalDateTime creationDate;
     private String priority;
 
-    public TaskDTO(int id, String mainText, LocalDate date, LocalDateTime creationDate,
-                    String priority, boolean completed) {
+    public TaskPersistenceDTO(int id, String mainText, LocalDateTime date, LocalDateTime creationDate,
+                              String priority, boolean completed) {
         this.creationDate = creationDate;
         this.id = id;
         this.mainText = mainText;
@@ -21,11 +20,11 @@ public class TaskDTO {
         this.priority = priority;
     }
 
-    public TaskDTO(int id) {
+    public TaskPersistenceDTO(int id) {
         this.id = id;
     }
 
-    public TaskDTO(int id, boolean completed) {
+    public TaskPersistenceDTO(int id, boolean completed) {
         this.id = id;
         this.completed = completed;
     }
@@ -38,7 +37,7 @@ public class TaskDTO {
         return creationDate;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 

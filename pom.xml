@@ -27,6 +27,14 @@
             <version>3.27.6</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <!-- Usa una versión compatible con tu JDK y MySQL Server -->
+            <version>8.0.33</version>
+        </dependency>
+
     </dependencies>
 
     <build>
