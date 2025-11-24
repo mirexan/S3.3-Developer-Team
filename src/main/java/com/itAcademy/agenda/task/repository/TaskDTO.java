@@ -1,10 +1,9 @@
 package com.itAcademy.agenda.task.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TaskDTO {
-    private int id;
+    private final int id;
     private String mainText;
     private LocalDateTime date;
     private boolean completed;

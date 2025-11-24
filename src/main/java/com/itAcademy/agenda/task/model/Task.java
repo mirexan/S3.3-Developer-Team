@@ -7,12 +7,12 @@ import java.util.Objects;
 
 public class Task {
 
-    private int id;
-    private String text;
-    private LocalDateTime expirationDate;
-    private Priority priority;
-    private boolean completed;
-    private LocalDateTime creationDate;
+    private final int id;
+    private final String text;
+    private final LocalDateTime expirationDate;
+    private final Priority priority;
+    private final boolean completed;
+    private final LocalDateTime creationDate;
 
     public Task(TaskBuilder taskBuilder) {
         this.id = taskBuilder.getId();
@@ -37,14 +37,6 @@ public class Task {
 
     public LocalDateTime getExpirationDate() {
         return expirationDate;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
     }
 
     public boolean isCompleted() {
