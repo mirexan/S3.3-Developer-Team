@@ -2,7 +2,6 @@ package com.itAcademy.agenda.task.model;
 
 import com.itAcademy.agenda.task.service.TaskBuilder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -15,14 +14,9 @@ public class Task {
     private boolean completed;
     private LocalDateTime creationDate;
 
-
-    public enum Priority{
-        LOW, MEDIUM, HIGH
-    }
-
-   public Task(TaskBuilder taskBuilder){
+    public Task(TaskBuilder taskBuilder) {
         this.id = taskBuilder.getId();
-        this. text = taskBuilder.getText();
+        this.text = taskBuilder.getText();
         this.expirationDate = taskBuilder.getExpirationDate();
         this.priority = taskBuilder.getPriority();
         this.completed = taskBuilder.isCompleted();
@@ -36,6 +30,7 @@ public class Task {
     public String getText() {
         return text;
     }
+
     public String getPriority() {
         return this.priority.toString();
     }
@@ -73,14 +68,14 @@ public class Task {
     }
 
     @Override
-   public String toString() {
-       return "Task{" +
-               "id=" + id +
-               ", text='" + text + '\'' +
-               ", expirationDate=" + expirationDate +
-               ", priority=" + priority +
-               ", completed=" + completed +
-               ", creationDate=" + creationDate +
-               '}';
-   }
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", expirationDate=" + expirationDate +
+                ", priority=" + priority +
+                ", completed=" + completed +
+                ", creationDate=" + creationDate +
+                '}';
+    }
 }

@@ -1,26 +1,30 @@
 package com.itAcademy.agenda.task.repository;
 
 
-import com.itAcademy.agenda.task.model.Task;
+import com.itAcademy.agenda.task.model.*;
+import com.itAcademy.agenda.task.service.TaskBuilder;
 
 public class TaskRepoMapper {
     public Task toTask(TaskDTO dto) {
-        return new Task(
-                dto.getId(),
-                dto.getMainText(),
-                dto.getDate(),
-                dto.getCompleted(),
-                dto.getCreationDate(),
-                Task.Priority.valueOf(dto.getPriority()));
+        TaskBuilder builder = new TaskBuilder()
+                .id(dto.getId())
+                .text(dto.getMainText())
+                .expirationDate(dto.getDate())
+                .priority(Priority.valueOf(dto.getPriority()))
+                .completed(dto.getCompleted())
+                .creationDate(dto.getCreationDate());
+
+        return new Task(builder);
     }
+
 
     public TaskDTO toDto(Task task) {
         return new TaskDTO(
                 task.getId(),
-                task.getMainText(),
-                task.getDate(),
+                task.getText(),
+                task.getExpirationDate(),
                 task.getCreationDate(),
-                task.getPriority().name(),
+                task.getPriority(),
                 task.isCompleted());
     }
 }

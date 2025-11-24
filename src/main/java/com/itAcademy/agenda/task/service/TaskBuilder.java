@@ -1,6 +1,6 @@
 package com.itAcademy.agenda.task.service;
 
-import com.itAcademy.agenda.task.model.Task;
+import com.itAcademy.agenda.task.model.*;
 
 import java.time.LocalDateTime;
 
@@ -8,7 +8,7 @@ public class TaskBuilder implements Builder<Task> {
     private Integer id;
     private String text;
     private LocalDateTime expirationDate;
-    private Task.Priority priority;
+    private Priority priority;
     private boolean completed;
     private LocalDateTime creationDate;
 
@@ -17,33 +17,48 @@ public class TaskBuilder implements Builder<Task> {
     }
 
     @Override
-    public Task build(){
+    public Task build() {
         return new Task(this);
     }
 
     //reset() ya coloca la fecha de creación a la actual y la prioridad en MEDIUM.
     @Override
-    public void reset(){
-        this.id= null; //Todavía no tiene id.
+    public void reset() {
+        this.id = null; //Todavía no tiene id.
         this.text = null;
         this.expirationDate = null;
-        this.priority = priority.MEDIUM;
+        this.priority = Priority.MEDIUM;
         this.completed = false;
         this.creationDate = LocalDateTime.now();
     }
 
-    public TaskBuilder id(int id){
+    public TaskBuilder id(int id) {
         this.id = id;
         return this;
     }
 
-    public TaskBuilder text(String text){
+    public TaskBuilder text(String text) {
         this.text = text;
         return this;
     }
 
     public TaskBuilder expirationDate(LocalDateTime expirationDate) throws IllegalArgumentException {
         this.expirationDate = expirationDate;
+        return this;
+    }
+
+    public TaskBuilder priority(Priority priority) {
+        this.priority = priority;
+        return this;
+    }
+
+    public TaskBuilder completed(Boolean completed) {
+        this.completed = completed;
+        return this;
+    }
+
+    public TaskBuilder creationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
         return this;
     }
 
@@ -61,7 +76,7 @@ public class TaskBuilder implements Builder<Task> {
         return expirationDate;
     }
 
-    public Task.Priority getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
@@ -73,9 +88,3 @@ public class TaskBuilder implements Builder<Task> {
         return creationDate;
     }
 }
-
-
-
-
-
-

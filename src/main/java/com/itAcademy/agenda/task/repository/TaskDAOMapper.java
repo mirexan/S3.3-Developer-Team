@@ -35,7 +35,7 @@ public class TaskDAOMapper {
         return new TaskDTO(
                 rs.getInt("id"),
                 rs.getString("main_text"),
-                rs.getDate("date").toLocalDate(),
+                rs.getTimestamp("date").toLocalDateTime(),
                 rs.getTimestamp("creation_date").toLocalDateTime(),
                 rs.getString("priority"),
                 rs.getBoolean("completed")

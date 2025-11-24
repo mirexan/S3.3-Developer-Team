@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 public class TaskDTO {
     private int id;
     private String mainText;
-    private LocalDate date;
+    private LocalDateTime date;
     private boolean completed;
     private LocalDateTime creationDate;
     private String priority;
 
-    public TaskDTO(int id, String mainText, LocalDate date, LocalDateTime creationDate,
+    public TaskDTO(int id, String mainText, LocalDateTime date, LocalDateTime creationDate,
                     String priority, boolean completed) {
         this.creationDate = creationDate;
         this.id = id;
@@ -38,7 +38,7 @@ public class TaskDTO {
         return creationDate;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 

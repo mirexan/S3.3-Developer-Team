@@ -33,7 +33,7 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
         String sqlQuery = "INSERT INTO task (main_text, date, creation_date, priority) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, dto.getMainText());
-            stmt.setDate(2, Date.valueOf(dto.getDate()));
+            stmt.setTimestamp(2, Timestamp.valueOf(dto.getDate()));
             stmt.setTimestamp(3, Timestamp.valueOf(dto.getCreationDate()));
             stmt.setString(4, dto.getPriority());
 
@@ -49,7 +49,7 @@ public class MySQLTaskDAOAdapter implements TaskDAO {
         String sqlQuery = "UPDATE task SET main_text = ?, date = ?, priority = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
             stmt.setString(1, dto.getMainText());
-            stmt.setDate(2, Date.valueOf(dto.getDate()));
+            stmt.setTimestamp(2, Timestamp.valueOf(dto.getDate()));
             stmt.setString(3, dto.getPriority());
             stmt.setInt(4, dto.getId());
 
