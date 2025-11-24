@@ -21,31 +21,29 @@ public class TaskService {
     public TaskService(TaskRepository taskRepository, TaskBuilder taskBuilder) {
         this.taskRepository = taskRepository;
         this.taskBuilder = taskBuilder;
-        }
+    }
 
     //Crea una nueva tarea, parametros minimos: texto obligatorio y fecha de caducidad
-    public boolean createTask (String text, LocalDateTime expirationDate) throws InvalidTaskException, SQLException {
+    public void createTask(String text, LocalDateTime expirationDate) throws InvalidTaskException, SQLException {
 
         //El texto no puede entrar vacio
-        if(text == null || text.trim().isEmpty() || text.trim().isBlank()){
+        if (text == null || text.trim().isEmpty() || text.trim().isBlank()) {
             throw new InvalidTaskException("Text can't be empty");
         }
 
         //La fecha de caducidad no puede ser anterior a la actual
 
-        if(expirationDate != null && expirationDate.isBefore(LocalDateTime.now())){
+        if (expirationDate != null && expirationDate.isBefore(LocalDateTime.now())) {
             throw new InvalidTaskException("Expiration Date can't be before the current date");
         }
 
         //Ponemos a cero los valores del taskBuilder
         taskBuilder.reset();
-        //Generamos la task.
-        taskBuilder.text(text.trim()).expirationDate(expirationDate).build();
+        //Generamos la task.taskButaskBuilder.text(text.trim()).expirationDate(expirationDate).build()ilder.text(text.trim()).expirationDate(expirationDate).build();
 
-        //Eliminar la linea siguiente en version final
-        return true;
+        Task task = taskBuilder.text(text.trim()).expirationDate(expirationDate).build();
 
-        //return TaskRepository.save(task);
+        taskRepository.createTask(task);
     }
 
     public List<TaskOutputDTO> listPendentTasks() {
@@ -62,17 +60,12 @@ public class TaskService {
                 .toList();
     }
 
-    public void deleteTask(int id){
+    public void deleteTask(int id) {
         Optional<Task> optionalTask = taskRepository.getTask(id);
-        if(optionalTask.isEmpty()){
+        if (optionalTask.isEmpty()) {
             throw new TaskNotFoundException("Task with ID: " + id + " not found");
         }
         taskRepository.deleteTask(id);
     }
-/*
-    public Task getTaskById (int id) throws SQLException {
-    return taskRepository.findbyId(id);
-    }
-    */
 
 }
