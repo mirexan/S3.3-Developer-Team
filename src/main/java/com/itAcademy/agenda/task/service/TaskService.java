@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 //este import esta de relleno, es la importación del TaskRepository
 //import task.TaskRepository;
 
@@ -46,6 +47,23 @@ public class TaskService {
         taskRepository.createTask(task);
     }
 
+    public List<TaskOutputDTO> listAllTasks() throws TaskNotFoundException{
+        List<Task> tasks = taskRepository.getAllTasks();
+
+        if(!tasks.isEmpty()){
+            return tasks.stream()
+                    .map(task -> new TaskOutputDTO(
+                            task.getId(),
+                            task.getText(),
+                            task.getPriority(),
+                            false
+                    ))
+                    .toList();
+        }else{
+            throw new TaskNotFoundException("There are no tasks.");
+        }
+    }
+
     public List<TaskOutputDTO> listPendentTasks() {
         // 1. Obtenemos las entidades del repositorio (que vienen del DAO)
         List<Task> tasks = taskRepository.listPendentTasks();
@@ -67,5 +85,4 @@ public class TaskService {
         }
         taskRepository.deleteTask(id);
     }
-
 }

@@ -12,23 +12,25 @@ import java.util.List;
 
 
 public class TaskCLI {
-	private final TaskService taskService;
-	public TaskCLI(TaskService taskService) {
-		this.taskService = taskService;
-	}
-	public void taskMenu() {
-		int option = -1;
-		while (option != 0) {
-			displayMenu();
-			try{
-				option = ConsoleInputUtils.readInt("Choose an option number : ");
-				switch (option) {
-					case 1 -> { createNewTask();
-					}
-					case 2 -> listPendentTasksCLI();
-					case 3 -> { askTaskToDelete();
+    private final TaskService taskService;
 
-					}
+    public TaskCLI(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    public void taskMenu() {
+        int option = -1;
+        while (option != 0) {
+            displayMenu();
+            try {
+                option = ConsoleInputUtils.readInt("Choose an option number : ");
+                switch (option) {
+                    case 1 -> {
+                        createNewTask();
+                    }
+                    case 2 -> listAllTasksCLI();
+                    case 3 -> listPendentTasksCLI();
+                    case 4 -> askTaskToDelete();
 					case 0 -> System.out.println("Going back to Main Menu");
 					default -> System.out.println("Invalid option. Try again");
 				}
@@ -43,18 +45,20 @@ public class TaskCLI {
 				+ "   \uD83D\uDCD2  TASK - Menu  \uD83D\uDCD2  \n"
 				+ ":::::::::::::::::::::::::::::::::\n"
 				+ "1. Create new Task\n"
-				+ "2. List not completed Tasks\n"
-				+ "3. Delete a Task\n"
+				+ "2. List all tasks\n"
+				+ "3. List not completed Tasks\n"
+				+ "4. Delete a Task\n"
 				+ "0. Go back to Main Menu\n"
 				+ "----------------------------------");
 	}
 
-	private void createNewTask() {
-		try {
-			System.out.println("\n--- Nueva Tarea ---");
-			String text = ConsoleInputUtils.readString("Descripción de la tarea: ");
-			// Simplificación de fecha para el ejemplo
-			LocalDateTime expiration = LocalDateTime.now().plusDays(1);
+
+    private void createNewTask() {
+        try {
+            System.out.println("\n--- Nueva Tarea ---");
+            String text = ConsoleInputUtils.readString("Descripción de la tarea: ");
+            // Simplificación de fecha para el ejemplo
+            LocalDateTime expiration = LocalDateTime.now().plusDays(1);
 
 			taskService.createTask(text, expiration);
 			System.out.println("✅ Tarea creada correctamente.");
@@ -62,7 +66,6 @@ public class TaskCLI {
 			System.err.println("Error de validación: " + e.getMessage());
 		}
 	}
-
 	private void askTaskToDelete() {
 		try{
 			int id = ConsoleInputUtils.readInt("Please enter the task ID you want to delete : ");
@@ -81,7 +84,15 @@ public class TaskCLI {
 		catch (InvalidInputException e){
 			System.out.println("Input error, please introduce an id number");
 		}
-
+	}
+	public void listAllTasksCLI() {
+		System.out.print("\n --- All Tasks ---\n");
+		try {
+			List<TaskOutputDTO> tasks = taskService.listAllTasks();
+			tasks.forEach(taskOutputDTO -> System.out.println(taskOutputDTO.toString()));
+		} catch (TaskNotFoundException e) {
+			System.err.println("Error: " + e.getMessage());
+		}
 	}
 	public void listPendentTasksCLI() {
 		System.out.print("\n --- Not completed Tasks ---\n");
