@@ -28,8 +28,9 @@ public class TaskCLI {
                     case 1 -> {
                         createNewTask();
                     }
-                    case 2 -> listPendentTasksCLI();
-                    case 3 -> {
+                    case 2 -> listAllTasksCLI();
+                    case 3 -> listPendentTasksCLI();
+                    case 4 -> {
                         askTaskToDelete();
 
                     }
