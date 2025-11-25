@@ -104,7 +104,7 @@ public class TaskCLIActions {
 
     public void markCompletedTaskCLI() {
         try {
-            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to mark as completed");
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to mark as completed : ");
             taskService.markCompleteTask(id);
         } catch (InvalidInputException | TaskNotFoundException e) {
             System.err.println("Error : " + e.getMessage());
@@ -113,18 +113,18 @@ public class TaskCLIActions {
 
     public void updateTaskTextCLI() {
         try {
-            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update");
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update : ");
             //checkear id
-            String newText = ConsoleInputUtils.readString("Please insert new text");
+            String newText = ConsoleInputUtils.readString("Please insert new text : ");
             taskService.updateTaskText(id, newText);
-        } catch (TaskNotFoundException | InvalidInputException e) {
+        } catch (InvalidInputException e) {
             System.err.println("Error : " + e.getMessage());
         }
     }
 
     public void updateTaskPriorityCLI() {
         try {
-            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update");
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update : ");
             String tempPriority = ConsoleInputUtils.readString("type the new priority: LOW, MEDIUM or HIGH. Default is MEDIUM");
             tempPriority = tempPriority.toUpperCase();
             boolean isValid = tempPriority.equals("LOW") || tempPriority.equals("MEDIUM") || tempPriority.equals("HIGH");
@@ -136,20 +136,16 @@ public class TaskCLIActions {
         } catch (InvalidInputException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public void updateTaskExpirationDateCLI() {
         try {
-            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update");
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update : ");
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             String tempExpDate = ConsoleInputUtils.readString("Type the new expiration date of the task in days/month/year Hours:minutes :");
             LocalDateTime expirationDate = LocalDateTime.parse(tempExpDate, dateFormat);
             taskService.updateTaskExpirationDate(id, expirationDate);
-        } catch (InvalidInputException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidTaskException e) {
+        } catch (InvalidInputException | InvalidTaskException e) {
             throw new RuntimeException(e);
         }
     }

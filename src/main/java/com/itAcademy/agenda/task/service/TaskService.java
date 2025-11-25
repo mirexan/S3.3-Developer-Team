@@ -42,7 +42,6 @@ public class TaskService {
         try{
             validateText(text);
             validateExpirationDate(expirationDate);
-
             taskBuilder.reset();
             Task task = taskBuilder
                     .text(text.trim())
@@ -163,8 +162,6 @@ public class TaskService {
         catch (InvalidTaskException | TaskNotFoundException e){
             System.err.println("Error: " + e.getMessage());
         }
-
-
     }
 
     public void updateTaskExpirationDate(int id, LocalDateTime newExpirationDate) throws InvalidTaskException {
