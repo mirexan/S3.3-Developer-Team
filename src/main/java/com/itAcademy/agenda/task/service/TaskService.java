@@ -54,7 +54,7 @@ public class TaskService {
                             task.getId(),
                             task.getText(),
                             task.getExpirationDate(),
-                            task.getPriority(),
+                            task.getPriority().name(),
                             task.isCompleted()
                     ))
                     .toList();
@@ -72,7 +72,7 @@ public class TaskService {
                             task.getId(),
                             task.getText(),
                             task.getExpirationDate(),
-                            task.getPriority(),
+                            task.getPriority().name(),
                             task.isCompleted()
                     ))
                     .toList();
@@ -90,7 +90,7 @@ public class TaskService {
                         task.getId(),
                         task.getText(),
                         task.getExpirationDate(),
-                        task.getPriority(),
+                        task.getPriority().name(),
                         task.isCompleted()
                 ))
                 .toList();

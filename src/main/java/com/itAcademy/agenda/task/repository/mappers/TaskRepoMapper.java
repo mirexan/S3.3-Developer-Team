@@ -25,7 +25,7 @@ public class TaskRepoMapper {
                 task.getText(),
                 task.getExpirationDate(),
                 task.getCreationDate(),
-                task.getPriority(),
+                task.getPriority().name(),
                 task.isCompleted());
     }
 }

@@ -31,8 +31,8 @@ public class Task {
         return text;
     }
 
-    public String getPriority() {
-        return this.priority.toString();
+    public Priority getPriority() {
+        return this.priority;
     }
 
     public LocalDateTime getExpirationDate() {
