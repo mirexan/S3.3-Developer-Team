@@ -5,6 +5,7 @@ import com.itAcademy.agenda.common.exception.InvalidTaskException;
 import com.itAcademy.agenda.common.exception.TaskNotFoundException;
 import com.itAcademy.agenda.common.utils.ConsoleInputUtils;
 import com.itAcademy.agenda.task.dto.TaskOutputDTO;
+import com.itAcademy.agenda.task.model.Priority;
 import com.itAcademy.agenda.task.service.TaskService;
 
 import java.time.LocalDateTime;
@@ -36,22 +37,23 @@ public class TaskCLIActions {
         try {
             System.out.println("\n--- New Task ---");
             String text = ConsoleInputUtils.readString("Insert task title : ");
-            //Declarando formato de fecha
-            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-            //Preguntando fecha
+            String tempExpDate = ConsoleInputUtils.readString("Type the expiration date of the task in days/month/year Hours:minutes (Leave Blank if you don't want to enter a date) :");
+            LocalDateTime expirationDate = LocalDateTime.now().plusDays(1);
 
-            String tempExpDate = ConsoleInputUtils.readString("Type the expiration date of the task in days/month/year Hours:minutes :");
-
-            LocalDateTime expirationDate = LocalDateTime.parse(tempExpDate,dateFormat);
+            if (tempExpDate != null && !tempExpDate.trim().isEmpty()){
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                expirationDate = LocalDateTime.parse(tempExpDate, dateFormat);
+            }
 
             taskService.createTask(text, expirationDate);
             System.out.println("✅ Task has been created.");
         } catch (InvalidTaskException e) {
-            System.err.println("Error : " + e.getMessage());
+            System.err.println("Unexpected error: " + e.getMessage());
         }
+
     }
 
-    void askTaskToDelete() {
+    public void askTaskToDelete() {
         try {
             int id = ConsoleInputUtils.readInt("Please enter the task ID you want to delete : ");
             String confirmation = ConsoleInputUtils.readString("Are you sure that you want " +
@@ -78,7 +80,8 @@ public class TaskCLIActions {
             System.out.println(e.getMessage());
         }
     }
-    public void listCompletedTasksCLI(){
+
+    public void listCompletedTasksCLI() {
         try {
             List<TaskOutputDTO> tasks = taskService.listCompletedTasks();
             System.out.print("\n --- Completed Tasks ---\n");
@@ -87,6 +90,7 @@ public class TaskCLIActions {
             System.out.println(e.getMessage());
         }
     }
+
     public void listPendentTasksCLI() {
         System.out.print("\n --- Not completed Tasks ---\n");
         List<TaskOutputDTO> tasks = taskService.listPendentTasks();
@@ -96,13 +100,62 @@ public class TaskCLIActions {
         }
         printList(tasks);
     }
-    public void markCompletedTaskCLI(){
+
+    public void updateTaskStatusCLI() {
         try {
-            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to mark as completed");
-            taskService.markCompleteTask(id);
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to modify : ");
+
+            System.out.println("1. Mark a task as completed");
+            System.out.println("2. Mark a task as not completed");
+            int option = ConsoleInputUtils.readInt("Choose an option");
+
+            switch (option){
+                case 1 -> taskService.markCompleteTask(id);
+                case 2 -> taskService.notCompleteTask(id);
+                default -> System.out.println("Choose an available option");
+            }
+        } catch (InvalidInputException | TaskNotFoundException | InvalidTaskException e) {
+            System.err.println("Error : " + e.getMessage());
         }
-        catch (InvalidTaskException | InvalidInputException | TaskNotFoundException e){
+    }
+
+    public void updateTaskTextCLI() {
+        try {
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update : ");
+            //checkear id
+            String newText = ConsoleInputUtils.readString("Please insert new text : ");
+            taskService.updateTaskText(id, newText);
+        } catch (InvalidInputException | InvalidTaskException | TaskNotFoundException e) {
+            System.err.println("Error : " + e.getMessage());
+        }
+    }
+
+    public void updateTaskPriorityCLI() {
+        try {
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update : ");
+            String tempPriority = ConsoleInputUtils.readString("type the new priority: LOW, MEDIUM or HIGH. Default is MEDIUM");
+            tempPriority = tempPriority.toUpperCase();
+            boolean isValid = tempPriority.equals("LOW") || tempPriority.equals("MEDIUM") || tempPriority.equals("HIGH");
+            if (!isValid) {
+                tempPriority = "MEDIUM";
+            }
+            Priority newPriority = Priority.valueOf(tempPriority);
+            taskService.updateTaskPriority(id, newPriority);
+        } catch (InvalidInputException | InvalidTaskException e) {
+            System.err.println("Error : " + e.getMessage());
+        }
+    }
+
+    public void updateTaskExpirationDateCLI() {
+        try {
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update : ");
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            String tempExpDate = ConsoleInputUtils.readString("Type the new expiration date of the task in days/month/year Hours:minutes :");
+            LocalDateTime expirationDate = LocalDateTime.parse(tempExpDate, dateFormat);
+            taskService.updateTaskExpirationDate(id, expirationDate);
+        } catch (InvalidInputException | InvalidTaskException e) {
             System.err.println("Error : " + e.getMessage());
         }
     }
 }
+

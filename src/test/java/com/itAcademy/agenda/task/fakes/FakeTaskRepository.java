@@ -13,21 +13,15 @@ import java.util.stream.Collectors;
  * Sustituye la base de datos (MySQL) con una lista en memoria (storage).
  */
 public class FakeTaskRepository extends TaskRepository {
-	// El almacenamiento de datos en memoria
 	private List<Task> storage = new ArrayList<>();
-	// Flags para verificar que los métodos fueron llamados
 	public boolean saveCalled = false;
 	public boolean deleteCalled = false;
-
-	// Llama al super constructor con null, ya que no usamos el DAO real.
 	public FakeTaskRepository() {
 		super(null);
 	}
-
 	public void loadTasks(List<Task> tasks) {
 		this.storage = new ArrayList<>(tasks);
 	}
-
 	public void clear() {
 		this.storage.clear();
 	}
@@ -65,4 +59,14 @@ public class FakeTaskRepository extends TaskRepository {
 	public List<Task> getCompletedTasks() {
 		return this.storage.stream().filter(Task::isCompleted).collect(Collectors.toList());
 	}
+	@Override
+	public void updateTask(Task task) {
+		storage.replaceAll(t -> t.getId() == task.getId() ? task : t);
+	}
+
+	@Override
+	public void completeTask(Task task) {
+		updateTask(task);
+	}
+
 }

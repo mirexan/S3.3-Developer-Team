@@ -10,120 +10,175 @@ import com.itAcademy.agenda.task.repository.TaskRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-//este import esta de relleno, es la importación del TaskRepository
-//import task.TaskRepository;
 
 public class TaskService {
 
-    private TaskRepository taskRepository;
-    private TaskBuilder taskBuilder;
+	private TaskRepository taskRepository;
+	private TaskBuilder taskBuilder;
 
-    public TaskService(TaskRepository taskRepository, TaskBuilder taskBuilder) {
-        this.taskRepository = taskRepository;
-        this.taskBuilder = taskBuilder;
-    }
+	public TaskService(TaskRepository taskRepository, TaskBuilder taskBuilder) {
+		this.taskRepository = taskRepository;
+		this.taskBuilder = taskBuilder;
+	}
 
-    //Crea una nueva tarea, parametros minimos: texto obligatorio y fecha de caducidad
-    public void createTask(String text, LocalDateTime expirationDate) throws InvalidTaskException {
+	public Task findTaskById(int id) throws TaskNotFoundException {
+		return taskRepository.getTask(id)
+				.orElseThrow(() -> new TaskNotFoundException("Task with ID: " + id + " not found"));
+	}
 
-        //El texto no puede entrar vacio
-        if (text == null || text.trim().isEmpty() || text.trim().isBlank()) {
-            throw new InvalidTaskException("Text can't be empty");
-        }
+	public void validateText(String text) throws InvalidTaskException {
+		if (text == null || text.trim().isEmpty()) {
+			throw new InvalidTaskException("Text can't be empty");
+		}
+	}
 
-        //La fecha de caducidad no puede ser anterior a la actual
+	public void validateExpirationDate(LocalDateTime expirationDate) throws InvalidTaskException {
+		if (expirationDate != null && expirationDate.isBefore(LocalDateTime.now())) {
+			throw new InvalidTaskException("Expiration Date can't be before the current date");
+		}
+	}
 
-        if (expirationDate != null && expirationDate.isBefore(LocalDateTime.now())) {
-            throw new InvalidTaskException("Expiration Date can't be before the current date");
-        }
+	public void createTask(String text, LocalDateTime expirationDate) throws InvalidTaskException {
+		validateText(text);
+		validateExpirationDate(expirationDate);
+		taskBuilder.reset();
+		Task task = taskBuilder
+				.text(text.trim())
+				.expirationDate(expirationDate)
+				.build();
+		taskRepository.createTask(task);
+	}
 
-        //Ponemos a cero los valores del taskBuilder
-        taskBuilder.reset();
-        //Generamos la task.taskButaskBuilder.text(text.trim()).expirationDate(expirationDate).build()ilder.text(text.trim()).expirationDate(expirationDate).build();
+	public List<TaskOutputDTO> listAllTasks() throws TaskNotFoundException {
+		List<Task> tasks = taskRepository.getAllTasks();
 
-        Task task = taskBuilder.text(text.trim()).expirationDate(expirationDate).build();
+		if (!tasks.isEmpty()) {
+			return tasks.stream()
+					.map(task -> new TaskOutputDTO(
+							task.getId(),
+							task.getText(),
+							task.getExpirationDate(),
+							task.getPriority().name(),
+							task.isCompleted()
+					))
+					.toList();
+		} else {
+			throw new TaskNotFoundException("There are no tasks.");
+		}
+	}
 
-        taskRepository.createTask(task);
-    }
+	public List<TaskOutputDTO> listCompletedTasks() throws TaskNotFoundException {
+		List<Task> tasks = taskRepository.getCompletedTasks();
 
-    public List<TaskOutputDTO> listAllTasks() throws TaskNotFoundException {
-        List<Task> tasks = taskRepository.getAllTasks();
+		if (!tasks.isEmpty()) {
+			return tasks.stream()
+					.map(task -> new TaskOutputDTO(
+							task.getId(),
+							task.getText(),
+							task.getExpirationDate(),
+							task.getPriority().name(),
+							task.isCompleted()
+					))
+					.toList();
+		} else {
+			throw new TaskNotFoundException("There are no completed tasks.");
+		}
+	}
 
-        if (!tasks.isEmpty()) {
-            return tasks.stream()
-                    .map(task -> new TaskOutputDTO(
-                            task.getId(),
-                            task.getText(),
-                            task.getExpirationDate(),
-                            task.getPriority().name(),
-                            task.isCompleted()
-                    ))
-                    .toList();
-        } else {
-            throw new TaskNotFoundException("There are no tasks.");
-        }
-    }
+	public List<TaskOutputDTO> listPendentTasks() {
+		List<Task> tasks = taskRepository.getPendentTasks();
+		return tasks.stream()
+				.map(task -> new TaskOutputDTO(
+						task.getId(),
+						task.getText(),
+						task.getExpirationDate(),
+						task.getPriority().name(),
+						task.isCompleted()
+				))
+				.toList();
+	}
 
-    public List<TaskOutputDTO> listCompletedTasks() throws TaskNotFoundException {
-        List<Task> tasks = taskRepository.getCompletedTasks();
+	public void deleteTask(int id) throws TaskNotFoundException {
+		Optional<Task> optionalTask = taskRepository.getTask(id);
+		if (optionalTask.isEmpty()) {
+			throw new TaskNotFoundException("Task with ID: " + id + " not found");
+		}
+		taskRepository.deleteTask(id);
+	}
 
-        if (!tasks.isEmpty()) {
-            return tasks.stream()
-                    .map(task -> new TaskOutputDTO(
-                            task.getId(),
-                            task.getText(),
-                            task.getExpirationDate(),
-                            task.getPriority().name(),
-                            task.isCompleted()
-                    ))
-                    .toList();
-        } else {
-            throw new TaskNotFoundException("There are no completed tasks.");
-        }
-    }
+	public void markCompleteTask(int id) throws TaskNotFoundException, InvalidTaskException {
+		Task task = findTaskById(id);
+		if (task.isCompleted()) {
+			throw new InvalidTaskException("Task is already completed");
+		}
+		Task completedTask = rebuildTask(task, true);
+		taskRepository.completeTask(completedTask);
+	}
 
-    public List<TaskOutputDTO> listPendentTasks() {
-        // 1. Obtenemos las entidades del repositorio (que vienen del DAO)
-        List<Task> tasks = taskRepository.getPendentTasks();
-        // 2. Convertimos de Entidad a DTO para proteger el dominio
-        return tasks.stream()
-                .map(task -> new TaskOutputDTO(
-                        task.getId(),
-                        task.getText(),
-                        task.getExpirationDate(),
-                        task.getPriority().name(),
-                        task.isCompleted()
-                ))
-                .toList();
-    }
+	public void notCompleteTask(int id) throws InvalidTaskException, TaskNotFoundException {
+		Task task = findTaskById(id);
+		if (!task.isCompleted()) {
+			throw new InvalidTaskException("Task is already NOT completed");
+		}
+		Task completedTask = rebuildTask(task, false);
+		taskRepository.completeTask(completedTask);
+	}
 
-    public void deleteTask(int id) {
-        Optional<Task> optionalTask = taskRepository.getTask(id);
-        if (optionalTask.isEmpty()) {
-            throw new TaskNotFoundException("Task with ID: " + id + " not found");
-        }
-        taskRepository.deleteTask(id);
-    }
-    public void markCompleteTask(int id) throws InvalidTaskException {
-        Optional<Task> optionalTask = taskRepository.getTask(id);
-        if (optionalTask.isEmpty()) {
-            throw new TaskNotFoundException("Task with ID: " + id + " not found");
-        }
-        Task task = optionalTask.get();
-        // Verificamos que no este completada
-        if (task.isCompleted()) {
-            throw new InvalidTaskException("Task is already completed");
-        }
-        taskBuilder.reset();
-        Task completedTask = taskBuilder
-                .id(task.getId())
-                .text(task.getText())
-                .expirationDate(task.getExpirationDate())
-                .priority(task.getPriority())
-                .completed(true)
-                .creationDate(task.getCreationDate())
-                .build();
+	public void updateTaskText(int id, String newText) throws InvalidTaskException, TaskNotFoundException {
+		validateText(newText);
+		Task original = findTaskById(id);
+		taskBuilder.reset();
+		Task updatedTask = taskBuilder
+				.id(id)
+				.text(newText.trim())
+				.priority(original.getPriority())
+				.expirationDate(original.getExpirationDate())
+				.completed(original.isCompleted())
+				.creationDate(original.getCreationDate())
+				.build();
+		taskRepository.updateTask(updatedTask);
+	}
 
-        taskRepository.completeTask(completedTask);
-    }
+	public void updateTaskExpirationDate(int id, LocalDateTime newExpirationDate) throws InvalidTaskException {
+		validateExpirationDate(newExpirationDate);
+		Task original = findTaskById(id);
+		taskBuilder.reset();
+		Task updatedTask = taskBuilder
+				.id(id)
+				.text(original.getText())
+				.priority(original.getPriority())
+				.expirationDate(newExpirationDate)
+				.completed(original.isCompleted())
+				.creationDate(original.getCreationDate())
+				.build();
+		taskRepository.updateTask(updatedTask);
+	}
+
+	public void updateTaskPriority(int id, Priority newPriority) throws InvalidTaskException {
+		Task original = findTaskById(id);
+		taskBuilder.reset();
+		Task updatedTask = taskBuilder
+				.id(id)
+				.text(original.getText())
+				.priority(newPriority)
+				.expirationDate(original.getExpirationDate())
+				.completed(original.isCompleted())
+				.creationDate(original.getCreationDate())
+				.build();
+		taskRepository.updateTask(updatedTask);
+	}
+
+	public Task rebuildTask(Task task, boolean completed) {
+		taskBuilder.reset();
+		return taskBuilder
+				.id(task.getId())
+				.text(task.getText())
+				.priority(task.getPriority())
+				.expirationDate(task.getExpirationDate())
+				.completed(completed)
+				.creationDate(task.getCreationDate())
+				.build();
+	}
+
+
 }
