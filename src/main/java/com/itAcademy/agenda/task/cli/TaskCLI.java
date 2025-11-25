@@ -18,7 +18,7 @@ public class TaskCLI {
 				option = ConsoleInputUtils.readInt("Choose an option number : ");
 				switch (option) {
 					case 1 -> actions.createNewTask();
-					case 2 -> actions.markCompletedTaskCLI();
+					case 2 -> actions.updateTaskStatusCLI();
 					case 3 -> actions.listAllTasksCLI();
 					case 4 -> actions.listCompletedTasksCLI();
 					case 5 -> actions.listPendentTasksCLI();
@@ -42,7 +42,7 @@ public class TaskCLI {
 				   \uD83D\uDCD2  TASK - Menu  \uD83D\uDCD2
 				:::::::::::::::::::::::::::::::::
 				1. Create new Task
-				2. Mark Task as completed
+				2. Update task status 
 				3. List all tasks
 				4. List completed tasks
 				5. List not completed Tasks
