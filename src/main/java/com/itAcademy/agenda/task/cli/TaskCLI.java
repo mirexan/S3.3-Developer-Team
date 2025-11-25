@@ -23,6 +23,9 @@ public class TaskCLI {
 					case 4 -> actions.listCompletedTasksCLI();
 					case 5 -> actions.listPendentTasksCLI();
 					case 6 -> actions.askTaskToDelete();
+                    case 7 -> actions.updateTaskTextCLI();
+                    case 8 -> actions.updateTaskPriorityCLI();
+                    case 9 -> actions.updateTaskExpirationDateCLI();
 					case 0 -> System.out.println("Going back to Main Menu");
 					default -> System.out.println("Invalid option. Try again");
 				}
@@ -44,6 +47,9 @@ public class TaskCLI {
 				4. List completed tasks
 				5. List not completed Tasks
 				6. Delete a Task
+				7. Update the text of a Task
+				8. Update the priority of a Task
+				9. Update the expiration date of a Task
 				0. Go back to Main Menu
 				---------------------------------""");
 	}
