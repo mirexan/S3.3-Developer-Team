@@ -36,14 +36,9 @@ public class TaskCLIActions {
         try {
             System.out.println("\n--- New Task ---");
             String text = ConsoleInputUtils.readString("Insert task title : ");
-            //Declarando formato de fecha
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-            //Preguntando fecha
-
             String tempExpDate = ConsoleInputUtils.readString("Type the expiration date of the task in days/month/year Hours:minutes :");
-
             LocalDateTime expirationDate = LocalDateTime.parse(tempExpDate,dateFormat);
-
             taskService.createTask(text, expirationDate);
             System.out.println("✅ Task has been created.");
         } catch (InvalidTaskException e) {
@@ -102,6 +97,17 @@ public class TaskCLIActions {
             taskService.markCompleteTask(id);
         }
         catch (InvalidTaskException | InvalidInputException | TaskNotFoundException e){
+            System.err.println("Error : " + e.getMessage());
+        }
+    }
+    public void updateTaskTextCLI(){
+        try{
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update");
+            //checkear id
+            String newText = ConsoleInputUtils.readString("Please insert new text");
+            taskService.updateTaskText();
+        }
+        catch (TaskNotFoundException | InvalidInputException e){
             System.err.println("Error : " + e.getMessage());
         }
     }
