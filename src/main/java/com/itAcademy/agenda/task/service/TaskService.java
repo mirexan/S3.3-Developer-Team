@@ -129,7 +129,7 @@ public class TaskService {
 
     }
 
-    public void notCompleteTask(int id) throws InvalidTaskException{
+    public void notCompleteTask(int id){
         try{
             Task task = findTaskById(id);
             if(!task.isCompleted()){

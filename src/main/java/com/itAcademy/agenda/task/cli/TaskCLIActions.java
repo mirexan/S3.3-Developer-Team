@@ -39,10 +39,10 @@ public class TaskCLIActions {
             System.out.println("\n--- New Task ---");
             String text = ConsoleInputUtils.readString("Insert task title : ");
             String tempExpDate = ConsoleInputUtils.readString("Type the expiration date of the task in days/month/year Hours:minutes (Leave Blank if you don't want to enter a date) :");
-            LocalDateTime expirationDate = null;
+            LocalDateTime expirationDate = LocalDateTime.of(9999, 12, 31, 23, 59);
 
-            if (tempExpDate !=null && (tempExpDate.trim().isEmpty())){
-                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm. ");
+            if (tempExpDate != null && !tempExpDate.trim().isEmpty()){
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm.");
                 expirationDate = LocalDateTime.parse(tempExpDate, dateFormat);
             }
 
@@ -104,8 +104,17 @@ public class TaskCLIActions {
 
     public void markCompletedTaskCLI() {
         try {
-            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to mark as completed");
-            taskService.markCompleteTask(id);
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to modify");
+
+            System.out.println("1. Mark a task as completed");
+            System.out.println("2. Mark a task as not completed");
+            int option = ConsoleInputUtils.readInt("Choose an option");
+
+            switch (option){
+                case 1 -> taskService.markCompleteTask(id);
+                case 2 -> taskService.notCompleteTask(id);
+                default -> System.out.println("Choose an available option");
+            }
         } catch (InvalidInputException | TaskNotFoundException e) {
             System.err.println("Error : " + e.getMessage());
         }
