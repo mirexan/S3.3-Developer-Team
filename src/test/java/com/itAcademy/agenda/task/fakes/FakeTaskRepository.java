@@ -48,11 +48,11 @@ public class FakeTaskRepository extends TaskRepository {
 		return this.storage;
 	}
 	@Override
-	public List<Task> listPendentTasks() {
+	public List<Task> getPendentTasks() {
 		return this.storage.stream().filter(t -> !t.isCompleted()).collect(Collectors.toList());
 	}
 	@Override
-	public List<Task> listCompletedTasks() {
+	public List<Task> getCompletedTasks() {
 		return this.storage.stream().filter(Task::isCompleted).collect(Collectors.toList());
 	}
 }

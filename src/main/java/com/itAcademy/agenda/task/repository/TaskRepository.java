@@ -38,13 +38,13 @@ public class TaskRepository {
         dao.update(mapper.toDto(task));
     }
 
-    public List<Task> listPendentTasks() {
+    public List<Task> getPendentTasks() {
         return dao.listPendent().stream()
                 .map(mapper::toTask)
                 .collect(Collectors.toList());
     }
 
-    public List<Task> listCompletedTasks() {
+    public List<Task> getCompletedTasks() {
         return dao.listCompleted().stream()
                 .map(mapper::toTask)
                 .collect(Collectors.toList());
