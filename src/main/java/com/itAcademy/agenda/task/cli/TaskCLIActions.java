@@ -102,10 +102,13 @@ public class TaskCLIActions {
     }
     public void updateTaskTextCLI(){
         try{
-            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to mark as completed");
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to update");
+            //checkear id
+            String newText = ConsoleInputUtils.readString("Please insert new text");
+            taskService.updateTaskText();
         }
-        catch (InvalidTaskException | TaskNotFoundException | InvalidInputException e){
-
+        catch (TaskNotFoundException | InvalidInputException e){
+            System.err.println("Error : " + e.getMessage());
         }
     }
 }
