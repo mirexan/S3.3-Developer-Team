@@ -3,6 +3,7 @@ package com.itAcademy.agenda.task.service;
 import com.itAcademy.agenda.common.exception.InvalidTaskException;
 import com.itAcademy.agenda.common.exception.TaskNotFoundException;
 import com.itAcademy.agenda.task.dto.TaskOutputDTO;
+import com.itAcademy.agenda.task.model.Priority;
 import com.itAcademy.agenda.task.model.Task;
 import com.itAcademy.agenda.task.repository.TaskRepository;
 
@@ -102,5 +103,27 @@ public class TaskService {
             throw new TaskNotFoundException("Task with ID: " + id + " not found");
         }
         taskRepository.deleteTask(id);
+    }
+    public void markCompleteTask(int id) throws InvalidTaskException {
+        Optional<Task> optionalTask = taskRepository.getTask(id);
+        if (optionalTask.isEmpty()) {
+            throw new TaskNotFoundException("Task with ID: " + id + " not found");
+        }
+        Task task = optionalTask.get();
+        // Verificamos que no este completada
+        if (task.isCompleted()) {
+            throw new InvalidTaskException("Task is already completed");
+        }
+        taskBuilder.reset();
+        Task completedTask = taskBuilder
+                .id(task.getId())
+                .text(task.getText())
+                .expirationDate(task.getExpirationDate())
+                .priority(Priority.valueOf(task.getPriority()))
+                .completed(true)
+                .creationDate(task.getCreationDate())
+                .build();
+
+        taskRepository.completeTask(completedTask);
     }
 }
