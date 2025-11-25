@@ -8,6 +8,7 @@ import com.itAcademy.agenda.task.dto.TaskOutputDTO;
 import com.itAcademy.agenda.task.service.TaskService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TaskCLIActions {
@@ -20,7 +21,7 @@ public class TaskCLIActions {
     public void printList(List<TaskOutputDTO> tasks) {
         tasks.forEach(task -> {
             String statusIcon = task.isCompleted() ? "✅ Completed" : "⏳ In Progress";
-            String dateString = (task.deadline() != null) ? task.deadline().toLocalTime().toString()
+            String dateString = (task.deadline() != null) ? task.deadline().toLocalDate().toString()
                     : "---";
             String output = "🆔 ID: " + task.id() +
                     " | 📝 title: " + task.title() +
@@ -31,17 +32,22 @@ public class TaskCLIActions {
         });
     }
 
-    void createNewTask() {
+    public void createNewTask() {
         try {
             System.out.println("\n--- New Task ---");
-            String text = ConsoleInputUtils.readString("Task name: ");
-            // Simplificación de fecha para el ejemplo
-            LocalDateTime expiration = LocalDateTime.now().plusDays(1);
+            String text = ConsoleInputUtils.readString("Insert task title : ");
+            //Declarando formato de fecha
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            //Preguntando fecha
 
-            taskService.createTask(text, expiration);
-            System.out.println("✅ Tarea creada correctamente.");
+            String tempExpDate = ConsoleInputUtils.readString("Type the expiration date of the task in days/month/year Hours:minutes :");
+
+            LocalDateTime expirationDate = LocalDateTime.parse(tempExpDate,dateFormat);
+
+            taskService.createTask(text, expirationDate);
+            System.out.println("✅ Task has been created.");
         } catch (InvalidTaskException e) {
-            System.err.println("Error de validación: " + e.getMessage());
+            System.err.println("Error : " + e.getMessage());
         }
     }
 
@@ -89,5 +95,14 @@ public class TaskCLIActions {
             return;
         }
         printList(tasks);
+    }
+    public void markCompletedTaskCLI(){
+        try {
+            int id = ConsoleInputUtils.readInt("Type the id of the task that you want to mark as completed");
+            taskService.markCompleteTask(id);
+        }
+        catch (InvalidTaskException | InvalidInputException | TaskNotFoundException e){
+            System.err.println("Error : " + e.getMessage());
+        }
     }
 }
