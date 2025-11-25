@@ -1,6 +1,6 @@
 package com.itAcademy.agenda.task.repository;
 
-import com.itAcademy.agenda.common.persistence.MySQLDatabaseConnection;
+import com.itAcademy.agenda.common.utils.MySQLDatabaseConnection;
 import com.itAcademy.agenda.task.dto.TaskPersistenceDTO;
 import com.itAcademy.agenda.task.repository.mappers.TaskDAOMapper;
 

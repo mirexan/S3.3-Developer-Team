@@ -55,8 +55,9 @@ public class TaskService {
                     .map(task -> new TaskOutputDTO(
                             task.getId(),
                             task.getText(),
+                            task.getExpirationDate(),
                             task.getPriority(),
-                            false
+                            task.isCompleted()
                     ))
                     .toList();
         }else{
@@ -72,8 +73,9 @@ public class TaskService {
                 .map(task -> new TaskOutputDTO(
                         task.getId(),
                         task.getText(),
+                        task.getExpirationDate(),
                         task.getPriority(),
-                        false
+                        task.isCompleted()
                 ))
                 .toList();
     }

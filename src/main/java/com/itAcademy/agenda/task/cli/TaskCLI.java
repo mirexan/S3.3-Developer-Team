@@ -12,10 +12,9 @@ import java.util.List;
 
 
 public class TaskCLI {
-    private final TaskService taskService;
-
-    public TaskCLI(TaskService taskService) {
-        this.taskService = taskService;
+	private TaskCLIActions actions;
+    public TaskCLI(TaskCLIActions actions) {
+		this.actions = actions;
     }
 
     public void taskMenu() {
@@ -26,11 +25,11 @@ public class TaskCLI {
                 option = ConsoleInputUtils.readInt("Choose an option number : ");
                 switch (option) {
                     case 1 -> {
-                        createNewTask();
+                        actions.createNewTask();
                     }
-                    case 2 -> listAllTasksCLI();
-                    case 3 -> listPendentTasksCLI();
-                    case 4 -> askTaskToDelete();
+                    case 2 -> actions.listAllTasksCLI();
+                    case 3 -> actions.listPendentTasksCLI();
+                    case 4 -> actions.askTaskToDelete();
 					case 0 -> System.out.println("Going back to Main Menu");
 					default -> System.out.println("Invalid option. Try again");
 				}
@@ -52,55 +51,4 @@ public class TaskCLI {
 				+ "----------------------------------");
 	}
 
-
-    private void createNewTask() {
-        try {
-            System.out.println("\n--- Nueva Tarea ---");
-            String text = ConsoleInputUtils.readString("Descripción de la tarea: ");
-            // Simplificación de fecha para el ejemplo
-            LocalDateTime expiration = LocalDateTime.now().plusDays(1);
-
-			taskService.createTask(text, expiration);
-			System.out.println("✅ Tarea creada correctamente.");
-		} catch (InvalidTaskException e) {
-			System.err.println("Error de validación: " + e.getMessage());
-		}
-	}
-	private void askTaskToDelete() {
-		try{
-			int id = ConsoleInputUtils.readInt("Please enter the task ID you want to delete : ");
-			String confirmation = ConsoleInputUtils.readString("Are you sure that you want " +
-					"to eliminate task with ID : " + id + "? (Y/N): ");
-			if(confirmation.equalsIgnoreCase("Y")) {
-				taskService.deleteTask(id);
-				System.out.println("Task Deleted Successfully");
-				return;
-			}
-			System.out.println("The Operation was cancelled, Task hasn't been deleted");
-		}
-		catch (TaskNotFoundException e){
-			System.out.printf("Error : " + e.getMessage());
-		}
-		catch (InvalidInputException e){
-			System.out.println("Input error, please introduce an id number");
-		}
-	}
-	public void listAllTasksCLI() {
-		try {
-			List<TaskOutputDTO> tasks = taskService.listAllTasks();
-            System.out.print("\n --- All Tasks ---\n");
-			tasks.forEach(taskOutputDTO -> System.out.println(taskOutputDTO.toString()));
-		} catch (TaskNotFoundException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-	public void listPendentTasksCLI() {
-		System.out.print("\n --- Not completed Tasks ---\n");
-		List<TaskOutputDTO> tasks = taskService.listPendentTasks();
-		if(tasks.isEmpty()){
-			System.out.println("No Tasks Found");
-			return ;
-		}
-		tasks.forEach(taskOutputDTO -> System.out.println(taskOutputDTO.toString()));
-	}
 }
