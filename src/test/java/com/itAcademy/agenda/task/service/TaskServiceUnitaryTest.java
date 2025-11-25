@@ -5,6 +5,7 @@ import com.itAcademy.agenda.common.exception.TaskNotFoundException;
 import com.itAcademy.agenda.task.dto.TaskOutputDTO;
 import com.itAcademy.agenda.task.fakes.FakeTaskRepository;
 import com.itAcademy.agenda.task.fakes.TaskFactory;
+import com.itAcademy.agenda.task.model.Priority;
 import com.itAcademy.agenda.task.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -73,8 +75,20 @@ class TaskServiceUnitaryTest {
 	}
 
 	@Nested
-	@DisplayName("List in progress and completed tasks")
+	@DisplayName("List Operations (All, Pending, Completed)")
 	class ListingTests {
+		@Test
+		@DisplayName("List All: Should return both pending and completed tasks")
+		void shouldReturnAllTasks() {
+			fakeRepository.loadTasks(List.of(
+					TaskFactory.createFakeTask(1, "In progress", false),
+					TaskFactory.createFakeTask(2, "Completed", true)
+			));
+			List<TaskOutputDTO> result = taskService.listAllTasks();
+			assertThat(result).hasSize(2);
+			assertThat(result).extracting(TaskOutputDTO::isCompleted)
+					.containsExactlyInAnyOrder(false, true);
+		}
 
 		@Test
 		@DisplayName("List in progress: only return completed = false tasks ")
@@ -100,7 +114,6 @@ class TaskServiceUnitaryTest {
 			assertThat(result).hasSize(1);
 			assertThat(result.get(0).isCompleted()).isTrue();
 		}
-
 		@Test
 		@DisplayName("If repository is empty, return an empty list (not null)")
 		void shouldReturnEmptyList_WhenRepositoryIsEmpty() {
@@ -119,10 +132,9 @@ class TaskServiceUnitaryTest {
 			assertThat(dto.id()).isEqualTo(entity.getId());
 			assertThat(dto.title()).isEqualTo(entity.getText());
 			assertThat(dto.deadline()).isEqualTo(entity.getExpirationDate());
-			assertThat(dto.priority()).isEqualTo(entity.getPriority());
+			assertThat(dto.priority()).isEqualTo(entity.getPriority().name());
 		}
 	}
-
 	@Nested
 	@DisplayName("Delete Task")
 	class DeletionTests {
@@ -148,6 +160,88 @@ class TaskServiceUnitaryTest {
 					.isInstanceOf(TaskNotFoundException.class)
 					.hasMessageContaining("not found");
 			assertThat(fakeRepository.deleteCalled).isFalse();
+		}
+	}
+	@Nested
+	@DisplayName("Update Operations")
+	class UpdateTests {
+
+		@Test
+		@DisplayName("Update Status: Should mark pending task as completed")
+		void shouldUpdateTaskStatusToCompleted() throws InvalidTaskException {
+			int id = 1;
+			Task task = TaskFactory.createFakeTask(id, "Task", false); // isCompleted = false
+			fakeRepository.loadTasks(List.of(task));
+			taskService.markCompleteTask(id);
+			Optional<Task> updatedTask = fakeRepository.getTask(id);
+			assertThat(updatedTask).isPresent();
+			assertThat(updatedTask.get().isCompleted()).isTrue();
+		}
+
+		@Test
+		@DisplayName("Update Text: Should update text when input is valid")
+		void shouldUpdateTaskText_WhenValid() throws InvalidTaskException {
+			int id = 1;
+			String oldText = "Old Text";
+			String newText = "New Updated Text";
+			fakeRepository.loadTasks(List.of(TaskFactory.createFakeTask(id, oldText, false)));
+			taskService.updateTaskText(id, newText);
+			Task updatedTask = fakeRepository.getTask(id).orElseThrow();
+			assertThat(updatedTask.getText()).isEqualTo(newText);
+		}
+
+		@Test
+		@DisplayName("Update Text: Should throw exception if new text is empty")
+		void shouldThrowException_WhenUpdatingTextWithEmpty() {
+			int id = 1;
+			fakeRepository.loadTasks(List.of(TaskFactory.createFakeTask(id, "Valid", false)));
+			assertThatThrownBy(() -> taskService.updateTaskText(id, ""))
+					.isInstanceOf(InvalidTaskException.class)
+					.hasMessageContaining("Text can't be empty");
+		}
+
+		@Test
+		@DisplayName("Update Priority: Should update priority")
+		void shouldUpdateTaskPriority() throws InvalidTaskException {
+			int id = 1;
+			Task task = TaskFactory.createFakeTask(id, "Task", false);
+			fakeRepository.loadTasks(List.of(task));
+			taskService.updateTaskPriority(id, Priority.HIGH);
+			Task updatedTask = fakeRepository.getTask(id).orElseThrow();
+			assertThat(updatedTask.getPriority().name()).isEqualTo(Priority.HIGH.name());
+		}
+
+		@Test
+		@DisplayName("Update Expiration: Should update date when valid future date")
+		void shouldUpdateExpirationDate_WhenFutureDate() throws InvalidTaskException {
+			int id = 1;
+			fakeRepository.loadTasks(List.of(TaskFactory.createFakeTask(id, "Task", false)));
+			LocalDateTime newDate = LocalDateTime.now().plusDays(5);
+			taskService.updateTaskExpirationDate(id, newDate);
+			Task updatedTask = fakeRepository.getTask(id).orElseThrow();
+			assertThat(updatedTask.getExpirationDate()).isEqualTo(newDate);
+		}
+
+		@Test
+		@DisplayName("Update Expiration: Should throw exception if date is in the past")
+		void shouldThrowException_WhenUpdatingDateToPast() {
+			int id = 1;
+			fakeRepository.loadTasks(List.of(TaskFactory.createFakeTask(id, "Task", false)));
+			LocalDateTime pastDate = LocalDateTime.now().minusDays(1);
+			assertThatThrownBy(() -> taskService.updateTaskExpirationDate(id, pastDate))
+					.isInstanceOf(InvalidTaskException.class)
+					.hasMessageContaining("Expiration Date can't be before");
+		}
+
+		@Test
+		@DisplayName("Generic Update: Should throw NotFoundException if ID does not exist")
+		void shouldThrowException_WhenUpdatingNonExistingId() {
+			fakeRepository.clear();
+			int nonExistingId = 99;
+			assertThatThrownBy(() -> taskService.updateTaskText(nonExistingId, "New Text"))
+					.isInstanceOf(TaskNotFoundException.class);
+			assertThatThrownBy(() -> taskService.markCompleteTask(nonExistingId))
+					.isInstanceOf(TaskNotFoundException.class);
 		}
 	}
 }
