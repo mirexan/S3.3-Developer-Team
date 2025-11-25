@@ -21,7 +21,7 @@ public class TaskCLIActions {
     public void printList(List<TaskOutputDTO> tasks) {
         tasks.forEach(task -> {
             String statusIcon = task.isCompleted() ? "✅ Completed" : "⏳ In Progress";
-            String dateString = (task.deadline() != null) ? task.deadline().toLocalTime().toString()
+            String dateString = (task.deadline() != null) ? task.deadline().toLocalDate().toString()
                     : "---";
             String output = "🆔 ID: " + task.id() +
                     " | 📝 title: " + task.title() +

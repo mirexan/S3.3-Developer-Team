@@ -55,7 +55,7 @@ public class TaskService {
                             task.getId(),
                             task.getText(),
                             task.getExpirationDate(),
-                            task.getPriority(),
+                            task.getPriority().name(),
                             task.isCompleted()
                     ))
                     .toList();
@@ -73,7 +73,7 @@ public class TaskService {
                             task.getId(),
                             task.getText(),
                             task.getExpirationDate(),
-                            task.getPriority(),
+                            task.getPriority().name(),
                             task.isCompleted()
                     ))
                     .toList();
@@ -91,7 +91,7 @@ public class TaskService {
                         task.getId(),
                         task.getText(),
                         task.getExpirationDate(),
-                        task.getPriority(),
+                        task.getPriority().name(),
                         task.isCompleted()
                 ))
                 .toList();
@@ -119,7 +119,7 @@ public class TaskService {
                 .id(task.getId())
                 .text(task.getText())
                 .expirationDate(task.getExpirationDate())
-                .priority(Priority.valueOf(task.getPriority()))
+                .priority(task.getPriority())
                 .completed(true)
                 .creationDate(task.getCreationDate())
                 .build();
