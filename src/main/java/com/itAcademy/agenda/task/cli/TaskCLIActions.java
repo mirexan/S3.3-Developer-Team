@@ -41,13 +41,13 @@ public class TaskCLIActions {
             LocalDateTime expirationDate = LocalDateTime.now().plusDays(1);
 
             if (tempExpDate != null && !tempExpDate.trim().isEmpty()){
-                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm.");
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                 expirationDate = LocalDateTime.parse(tempExpDate, dateFormat);
             }
 
             taskService.createTask(text, expirationDate);
             System.out.println("✅ Task has been created.");
-        } catch (RuntimeException e) {
+        } catch (InvalidTaskException e) {
             System.err.println("Unexpected error: " + e.getMessage());
         }
 
@@ -114,7 +114,7 @@ public class TaskCLIActions {
                 case 2 -> taskService.notCompleteTask(id);
                 default -> System.out.println("Choose an available option");
             }
-        } catch (InvalidInputException | TaskNotFoundException e) {
+        } catch (InvalidInputException | TaskNotFoundException | InvalidTaskException e) {
             System.err.println("Error : " + e.getMessage());
         }
     }
@@ -125,7 +125,7 @@ public class TaskCLIActions {
             //checkear id
             String newText = ConsoleInputUtils.readString("Please insert new text : ");
             taskService.updateTaskText(id, newText);
-        } catch (InvalidInputException e) {
+        } catch (InvalidInputException | InvalidTaskException | TaskNotFoundException e) {
             System.err.println("Error : " + e.getMessage());
         }
     }
@@ -141,8 +141,8 @@ public class TaskCLIActions {
             }
             Priority newPriority = Priority.valueOf(tempPriority);
             taskService.updateTaskPriority(id, newPriority);
-        } catch (InvalidInputException e) {
-            throw new RuntimeException(e);
+        } catch (InvalidInputException | InvalidTaskException e) {
+            System.err.println("Error : " + e.getMessage());
         }
     }
 
@@ -154,7 +154,7 @@ public class TaskCLIActions {
             LocalDateTime expirationDate = LocalDateTime.parse(tempExpDate, dateFormat);
             taskService.updateTaskExpirationDate(id, expirationDate);
         } catch (InvalidInputException | InvalidTaskException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error : " + e.getMessage());
         }
     }
 }

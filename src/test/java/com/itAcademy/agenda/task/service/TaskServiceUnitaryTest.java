@@ -36,7 +36,7 @@ class TaskServiceUnitaryTest {
 
 		@Test
 		@DisplayName("Should create and save a task when inputs are valid")
-		void shouldCreateAndSaveTask_WhenDataIsValid() {
+		void shouldCreateAndSaveTask_WhenDataIsValid() throws InvalidTaskException {
 			String validText = "Buy bread";
 			LocalDateTime futureDate = LocalDateTime.now().plusDays(1);
 			taskService.createTask(validText, futureDate);
