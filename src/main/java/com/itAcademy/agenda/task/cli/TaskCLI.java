@@ -4,53 +4,70 @@ import com.itAcademy.agenda.common.exception.InvalidInputException;
 import com.itAcademy.agenda.common.utils.ConsoleInputUtils;
 
 public class TaskCLI {
-	private final TaskCLIActions actions;
+    private final TaskCLIActions actions;
+    private final TaskCLIMenus menus;
 
-	public TaskCLI(TaskCLIActions actions) {
-		this.actions = actions;
-	}
+    public TaskCLI(TaskCLIActions actions, TaskCLIMenus menus) {
+        this.actions = actions;
+        this.menus = menus;
+    }
 
-	public void taskMenu() {
-		int option = -1;
-		while (option != 0) {
-			displayMenu();
-			try {
-				option = ConsoleInputUtils.readInt("Choose an option number : ");
-				switch (option) {
-					case 1 -> actions.createNewTask();
-					case 2 -> actions.updateTaskStatusCLI();
-					case 3 -> actions.listAllTasksCLI();
-					case 4 -> actions.listCompletedTasksCLI();
-					case 5 -> actions.listPendentTasksCLI();
-					case 6 -> actions.askTaskToDelete();
-                    case 7 -> actions.updateTaskTextCLI();
-                    case 8 -> actions.updateTaskPriorityCLI();
-                    case 9 -> actions.updateTaskExpirationDateCLI();
-					case 0 -> System.out.println("Going back to Main Menu");
-					default -> System.out.println("Invalid option. Try again");
-				}
-			} catch (InvalidInputException e) {
-				System.err.println("Input error, please introduce a number between 1 and 3!");
-			}
-		}
-	}
+    public void taskMenu() {
+        int option = -1;
+        while (option != 0) {
+            menus.displayMainMenu();
+            try {
+                option = ConsoleInputUtils.readInt("Choose an option number : ");
+                switch (option) {
+                    case 1 -> actions.createNewTask();
+                    case 2 -> actions.updateTaskStatusCLI();
+                    case 3 -> listTasksMenu();
+                    case 4 -> listUpdateOptions();
+                    case 5 -> actions.askTaskToDelete();
+                    case 0 -> System.out.println("Going back to Main Menu");
+                    default -> System.out.println("Invalid option. Try again");
+                }
+            } catch (InvalidInputException e) {
+                System.err.println("Input error, please introduce a number between 1 and 5!");
+            }
+        }
+    }
 
-	public void displayMenu() {
-		System.out.println("""
+    public void listTasksMenu() {
+        int option = -1;
+        while (option != 0) {
+            menus.displayListTasksMenu();
+            try {
+                option = ConsoleInputUtils.readInt("Choose an option number: ");
+                switch (option) {
+                    case 1 -> actions.listAllTasksCLI();
+                    case 2 -> actions.listCompletedTasksCLI();
+                    case 3 -> actions.listPendentTasksCLI();
+                    case 0 -> System.out.println("Going back to Task Menu");
+                    default -> System.out.println("Invalid option. Try again");
+                }
+            } catch (InvalidInputException e) {
+                System.err.println("Input error, please introduce a number between 1 and 3!");
+            }
+        }
+    }
 
-				:::::::::::::::::::::::::::::::::
-				   \uD83D\uDCD2  TASK - Menu  \uD83D\uDCD2
-				:::::::::::::::::::::::::::::::::
-				1. Create new Task
-				2. Update task status 
-				3. List all tasks
-				4. List completed tasks
-				5. List not completed Tasks
-				6. Delete a Task
-				7. Update the text of a Task
-				8. Update the priority of a Task
-				9. Update the expiration date of a Task
-				0. Go back to Main Menu
-				---------------------------------""");
-	}
+    public void listUpdateOptions() {
+        int option = -1;
+        while (option != 0) {
+            menus.displayUpdateTaskMenu();
+            try {
+                option = ConsoleInputUtils.readInt("Choose an option number: ");
+                switch (option) {
+                    case 1 -> actions.updateTaskTextCLI();
+                    case 2 -> actions.updateTaskPriorityCLI();
+                    case 3 -> actions.updateTaskExpirationDateCLI();
+                    case 0 -> System.out.println("Going back to Task Menu");
+                    default -> System.out.println("Invalid option. Try again");
+                }
+            } catch (InvalidInputException e) {
+                System.err.println("Input error, please introduce a number between 1 and 3!");
+            }
+        }
+    }
 }
